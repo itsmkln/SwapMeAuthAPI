@@ -11,8 +11,8 @@ using SwapMeAngularAuthAPI.Context;
 namespace SwapMeAngularAuthAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221121193946_SwapMe")]
-    partial class SwapMe
+    [Migration("20221123221715_SwapMeV1")]
+    partial class SwapMeV1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -47,8 +47,8 @@ namespace SwapMeAngularAuthAPI.Migrations
                     b.Property<string>("Password")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("PhoneNumber")
-                        .HasColumnType("int");
+                    b.Property<string>("PhoneNumber")
+                        .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("Role")
                         .HasColumnType("nvarchar(max)");
