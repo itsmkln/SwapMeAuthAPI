@@ -17,5 +17,8 @@ namespace SwapMeAngularAuthAPI.Models
         public string? City { get; set; }
         public string? State { get; set; }
 
+        public string? RefreshToken { get; set; }
+        public DateTime RefreshTokenExpirationTime {  get; set; }
+
     }
 }
