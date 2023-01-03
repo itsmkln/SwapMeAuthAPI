@@ -11,8 +11,8 @@ using SwapMeAngularAuthAPI.Context;
 namespace SwapMeAngularAuthAPI.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20221123221715_SwapMeV1")]
-    partial class SwapMeV1
+    [Migration("20230103203353_v1")]
+    partial class v1
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

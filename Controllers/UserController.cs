@@ -28,10 +28,17 @@ namespace SwapMeAngularAuthAPI.Controllers
         {
             if (userObj == null)
                 return BadRequest();
+
             var user = await _authContext.Users
-                .FirstOrDefaultAsync(x=>x.Username == userObj.Username && x.Password == userObj.Password);
+                .FirstOrDefaultAsync(x=>x.Username == userObj.Username);
+
             if (user == null)
-                return NotFound(new {Message = "Invalid credentials!"});
+                return NotFound(new {Message = "User not found!"});
+
+            if(!PwHasher.VerifyPassword(userObj.Password, user.Password))
+            {
+                return BadRequest(new {Message = "Password is invalid"});
+            }
 
             user.Token = CreateJwtToken(user);
 
@@ -39,7 +46,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             {
                 Token = user.Token,
                 Message = "Login success!"
-            }) ;
+            });
         }
 
         [HttpPost("register")]
@@ -61,10 +68,10 @@ namespace SwapMeAngularAuthAPI.Controllers
                 return BadRequest(new { Message = "Email already exists!" });
             }
 
-            //Check if the password is strong
-            var pass = CheckPasswordStrength(userObj.Password);
-            if (!string.IsNullOrEmpty(pass))
-                return BadRequest(new { Message = pass.ToString() });
+            ////Check if the password is strong
+            //var pass = CheckPasswordStrength(userObj.Password);
+            //if (!string.IsNullOrEmpty(pass))
+            //    return BadRequest(new { Message = pass.ToString() });
 
 
             userObj.Password = PwHasher.HashPw(userObj.Password);
