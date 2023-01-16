@@ -3,7 +3,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace SwapMeAngularAuthAPI.Models
 {
-    public class Offers
+    public class Offer
     {
         [Key]
         public int OfferId { get; set; }

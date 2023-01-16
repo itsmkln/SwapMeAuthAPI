@@ -2,7 +2,7 @@
 
 namespace SwapMeAngularAuthAPI.Models
 {
-    public class OffersTypes
+    public class OfferType
     {
         [Key]
         public int OfferTypeId { get; set; }

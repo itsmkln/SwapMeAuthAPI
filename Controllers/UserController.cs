@@ -18,10 +18,10 @@ namespace SwapMeAngularAuthAPI.Controllers
     [ApiController]
     public class UserController : ControllerBase
     {
-        private readonly AppDbContext _authContext;
-        public UserController(AppDbContext appDbContext)
+        private readonly UsersDbContext _usersContext;
+        public UserController(UsersDbContext appDbContext)
         {
-            _authContext = appDbContext;
+            _usersContext = appDbContext;
         }
 
         [HttpPost("authenticate")]
@@ -30,7 +30,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             if (userObj == null)
                 return BadRequest();
 
-            var user = await _authContext.Users
+            var user = await _usersContext.Users
                 .Include(u => u.UserInfo)
                 .FirstOrDefaultAsync(x => x.Username == userObj.Username);
 
@@ -93,8 +93,8 @@ namespace SwapMeAngularAuthAPI.Controllers
             //    return BadRequest(new { Message = pass.ToString() });
 
 
-            await _authContext.Users.AddAsync(dbUser);
-            await _authContext.SaveChangesAsync();
+            await _usersContext.Users.AddAsync(dbUser);
+            await _usersContext.SaveChangesAsync();
             return Ok(new 
             {
                 Message = "User registered!" 
@@ -102,9 +102,9 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
         private Task<bool> CheckIfUsernameExistAsync(string username)
-            => _authContext.Users.AnyAsync(x => x.Username == username);
+            => _usersContext.Users.AnyAsync(x => x.Username == username);
         private Task<bool> CheckIfEmailExistAsync(string email)
-            => _authContext.Users.AnyAsync(x => x.Email == email);
+            => _usersContext.Users.AnyAsync(x => x.Email == email);
 
         private string CheckPasswordStrength(string password)
         {
@@ -148,14 +148,14 @@ namespace SwapMeAngularAuthAPI.Controllers
         [HttpGet("users/getallusersinfo")]
         public async Task<ActionResult<User>> GetAllUsersData()
         {
-            var users = await _authContext.Users.Include(x=>x.UserInfo).ToListAsync();
+            var users = await _usersContext.Users.Include(x=>x.UserInfo).ToListAsync();
             return Ok(users);
         }
 
         [HttpGet("users/{username}")]
         public async Task<IActionResult> GetUser([FromRoute] string username)
         {
-            var users = await _authContext.Users.Include(x => x.UserInfo).ToListAsync();
+            var users = await _usersContext.Users.Include(x => x.UserInfo).ToListAsync();
             var user = users.FirstOrDefault(x => x.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase));
             if(user == null)
             {
@@ -173,10 +173,10 @@ namespace SwapMeAngularAuthAPI.Controllers
         {
             if (userId == 0)
             {
-                return BadRequest();
+                return NotFound();
             }
 
-            var dbUser = await _authContext.Users.SingleOrDefaultAsync(x => x.UserId == userId);
+            var dbUser = await _usersContext.Users.SingleOrDefaultAsync(x => x.UserId == userId);
 
 
             if (dbUser == null)
@@ -185,48 +185,48 @@ namespace SwapMeAngularAuthAPI.Controllers
             }
 
             dbUser.Role = "Admin";
-            await _authContext.SaveChangesAsync();
+            await _usersContext.SaveChangesAsync();
             return Ok("huj");
 
         }
 
 
-        //[HttpPut("users/update")]
-        //public async Task<IActionResult> Update([FromBody] User userObj)
-        //{
-        //    if (userObj == null)
-        //    {
-        //        return BadRequest();
-        //    }
-        //    var user = _authContext.Users.AsNoTracking().FirstOrDefault(x => x.UserId == userObj.UserId);
-        //    if(user == null)
-        //    {
-        //        return NotFound(new
-        //        {
-        //            StatusCode = 404,
-        //            Message = "User not found"
-        //        });
-        //    }
+        [HttpPut("users/update/user")]
+        public async Task<IActionResult> Update([FromBody] User userObj)
+        {
+            if (userObj == null)
+            {
+                return BadRequest();
+            }
+            var dbUser = _usersContext.Users.Include(x => x.UserInfo).FirstOrDefault(x => x.UserId == userObj.UserId);
 
-        //    _authContext.Entry(userObj).State = EntityState.Modified;
-        //    await _authContext.SaveChangesAsync();
-        //    return Ok(new
-        //    {
-        //        StatusCode= 200,
-        //        Message = "User has been updated!"
-        //    });
-        //}
+            if (dbUser == null)
+            {
+                return NotFound("User not found");
+            }
+
+            //dbUser.Password = userObj.Password; //in case someone would not put hash, put hashing
+            dbUser.Username = userObj.Username;
+            dbUser.Role = userObj.Role;
+            dbUser.Email = userObj.Email;
+            dbUser.UserInfo = userObj.UserInfo;
+
+
+            await _usersContext.SaveChangesAsync();
+
+            return Ok("User has been updated!");
+        }
 
         [HttpDelete("users/delete/{userId}")]
         public async Task<IActionResult> DeleteUser(int userId)
         {
-            var user = await _authContext.Users.Include(x => x.UserInfo).SingleOrDefaultAsync(x => x.UserId == userId);
+            var user = await _usersContext.Users.Include(x => x.UserInfo).SingleOrDefaultAsync(x => x.UserId == userId);
             if (user == null)
                 return NotFound();
             //_authContext.UserInfo.Remove(user.UserInfo);
-            _authContext.Users.Remove(user);
+            _usersContext.Users.Remove(user);
 
-            await _authContext.SaveChangesAsync();
+            await _usersContext.SaveChangesAsync();
             return Ok("usunełem");
         }
     }

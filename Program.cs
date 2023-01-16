@@ -24,7 +24,7 @@ builder.Services.AddCors(option =>
     });
 });
 
-builder.Services.AddDbContext<AppDbContext>(option =>
+builder.Services.AddDbContext<UsersDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr"));
 });

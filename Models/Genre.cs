@@ -2,10 +2,13 @@
 
 namespace SwapMeAngularAuthAPI.Models
 {
-    public class Genres
+    public class Genre
     {
         [Key]
         public int GenreId { get; set; }
         public string Name { get; set; }
+
+        public int GameId { get; set; }
+
     }
 }

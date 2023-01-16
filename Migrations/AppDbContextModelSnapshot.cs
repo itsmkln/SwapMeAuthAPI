@@ -9,7 +9,7 @@ using SwapMeAngularAuthAPI.Context;
 
 namespace SwapMeAngularAuthAPI.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     partial class AppDbContextModelSnapshot : ModelSnapshot
     {
         protected override void BuildModel(ModelBuilder modelBuilder)

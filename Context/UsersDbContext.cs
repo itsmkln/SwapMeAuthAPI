@@ -4,9 +4,9 @@ using SwapMeAngularAuthAPI.Models;
 
 namespace SwapMeAngularAuthAPI.Context
 {
-    public class AppDbContext : DbContext
+    public class UsersDbContext : DbContext
     {
-        public AppDbContext(DbContextOptions<AppDbContext> options): base(options)
+        public UsersDbContext(DbContextOptions<UsersDbContext> options): base(options)
         {
 
         }

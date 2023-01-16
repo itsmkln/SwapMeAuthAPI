@@ -12,6 +12,6 @@ namespace SwapMeAngularAuthAPI.Models
         public string? Role { get; set; }
         public string? Email { get; set; }
 
-        public virtual UserInfo UserInfo { get; set; }
+        public UserInfo UserInfo { get; set; }
     }
 }

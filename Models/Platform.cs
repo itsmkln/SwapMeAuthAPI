@@ -2,7 +2,7 @@
 
 namespace SwapMeAngularAuthAPI.Models
 {
-    public class Platforms
+    public class Platform
     {
         [Key]
         public int PlatformId { get; set; }

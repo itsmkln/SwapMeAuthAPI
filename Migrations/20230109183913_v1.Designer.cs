@@ -10,7 +10,7 @@ using SwapMeAngularAuthAPI.Context;
 
 namespace SwapMeAngularAuthAPI.Migrations
 {
-    [DbContext(typeof(AppDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     [Migration("20230109183913_v1")]
     partial class v1
     {
