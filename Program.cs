@@ -29,6 +29,12 @@ builder.Services.AddDbContext<UsersDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr"));
 });
 
+builder.Services.AddDbContext<GamesDbContext>(option =>
+{
+    option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr"));
+});
+
+
 builder.Services.AddAuthentication(x =>
 {
     x.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;

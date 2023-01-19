@@ -16,10 +16,10 @@ namespace SwapMeAngularAuthAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class UserController : ControllerBase
+    public class UsersController : ControllerBase
     {
         private readonly UsersDbContext _usersContext;
-        public UserController(UsersDbContext appDbContext)
+        public UsersController(UsersDbContext appDbContext)
         {
             _usersContext = appDbContext;
         }
@@ -44,10 +44,12 @@ namespace SwapMeAngularAuthAPI.Controllers
             }
 
             var token = CreateJwtToken(user);
+            var username = user.Username;
 
             return Ok(new
             {
                 token,
+                username,
                 Message = "Login success!"
             });
         }
@@ -145,14 +147,14 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
 
-        [HttpGet("users/getallusersinfo")]
+        [HttpGet("getallusersinfo")]
         public async Task<ActionResult<User>> GetAllUsersData()
         {
             var users = await _usersContext.Users.Include(x=>x.UserInfo).ToListAsync();
             return Ok(users);
         }
 
-        [HttpGet("users/{username}")]
+        [HttpGet("{username}")]
         public async Task<IActionResult> GetUser([FromRoute] string username)
         {
             var users = await _usersContext.Users.Include(x => x.UserInfo).ToListAsync();
@@ -168,7 +170,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             return Ok(user);
         }
 
-        [HttpPost("users/setadmin/{userId}")]
+        [HttpPost("setadmin/{userId}")]
         public async Task<IActionResult> Update([FromRoute] int userId)
         {
             if (userId == 0)
@@ -217,10 +219,23 @@ namespace SwapMeAngularAuthAPI.Controllers
             return Ok("User has been updated!");
         }
 
-        [HttpDelete("users/delete/{userId}")]
+        [HttpDelete("delete/{userId}")]
         public async Task<IActionResult> DeleteUser(int userId)
         {
             var user = await _usersContext.Users.Include(x => x.UserInfo).SingleOrDefaultAsync(x => x.UserId == userId);
+            if (user == null)
+                return NotFound();
+            //_authContext.UserInfo.Remove(user.UserInfo);
+            _usersContext.Users.Remove(user);
+
+            await _usersContext.SaveChangesAsync();
+            return Ok("usunełem");
+        }
+
+        [HttpDelete("deleteme/{username}")]
+        public async Task<IActionResult> DeleteByUsername(string username)
+        {
+            var user = await _usersContext.Users.Include(x => x.UserInfo).SingleOrDefaultAsync(x => x.Username == username);
             if (user == null)
                 return NotFound();
             //_authContext.UserInfo.Remove(user.UserInfo);

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SwapMeAngularAuthAPI.Context;
+using SwapMeAngularAuthAPI.Dtos;
 using SwapMeAngularAuthAPI.Models;
 
 namespace SwapMeAngularAuthAPI.Controllers
@@ -18,9 +19,8 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddGame(Game game)
+        public async Task<IActionResult> AddGame(GameDto game)
         {
-            _gamesContext.Games.Add(game);
             return Ok();
         }
 

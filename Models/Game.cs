@@ -7,6 +7,10 @@ namespace SwapMeAngularAuthAPI.Models
         [Key]
         public int GameId { get; set; }
         public int Name { get; set; }
-        public string Genre { get; set; }
+
+
+        public GameImage GameImage { get; set; }
+        public Genre Genre { get; set; }
+        public Offer Offer { get; set; }
     }
 }

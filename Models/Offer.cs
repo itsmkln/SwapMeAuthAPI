@@ -9,13 +9,13 @@ namespace SwapMeAngularAuthAPI.Models
         public int OfferId { get; set; }
         public int SellerId { get; set; }
         public bool isPhysical { get; set; } // is product in box or digital
-        public int PlatformId { get; set; }
-        public string OfferType { get; set; } // xchange, sale, xchange+sale
         public DateTime CreatedOn { get; set; }
         public double Price { get; set; }
         public string Status { get; set; } // new/active/ended/sold
 
 
+        public OfferType OfferType { get; set; } // xchange, sale, xchange+sale
+        public Platform Platform { get; set; }
         public int GameId { get; set; }
     }
 }

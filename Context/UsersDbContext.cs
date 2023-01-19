@@ -16,13 +16,6 @@ namespace SwapMeAngularAuthAPI.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-
-            //modelBuilder.Entity<User>()
-            //    .HasOne(a => a.UserInfo)
-            //    .WithOne(b => b.User);
-        //        .HasForeignKey<UserInfo>(e => e.User);
-
-
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<UserInfo>().ToTable("Users.Info");
         }
