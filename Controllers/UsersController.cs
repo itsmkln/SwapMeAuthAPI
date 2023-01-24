@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -38,18 +39,21 @@ namespace SwapMeAngularAuthAPI.Controllers
             if (user == null)
                 return NotFound(new {Message = "User not found!"});
 
-            if(!PwHasher.VerifyPassword(userObj.Password, user.Password))
+            if (userObj.Password == null || user.Password == null)
+            {
+                return BadRequest(new { Message = "Password is null" });
+            }
+
+            if (!PwHasher.VerifyPassword(userObj.Password, user.Password))
             {
                 return BadRequest(new {Message = "Password is invalid"});
             }
 
             var token = CreateJwtToken(user);
-            var username = user.Username;
 
             return Ok(new
             {
                 token,
-                username,
                 Message = "Login success!"
             });
         }
@@ -130,6 +134,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             var key = Encoding.ASCII.GetBytes("thisissecretkeyasfck2137.//");
             var identity = new ClaimsIdentity(new Claim[]
             {
+                new Claim(ClaimTypes.NameIdentifier, user.UserId.ToString()),
                 new Claim(ClaimTypes.Role, user.Role),
                 new Claim(ClaimTypes.Name,$"{user.UserInfo.FirstName} {user.UserInfo.LastName}"),
             });
@@ -193,7 +198,7 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
 
-        [HttpPut("users/update/user")]
+        [HttpPost("update")]
         public async Task<IActionResult> Update([FromBody] User userObj)
         {
             if (userObj == null)
@@ -202,47 +207,45 @@ namespace SwapMeAngularAuthAPI.Controllers
             }
             var dbUser = _usersContext.Users.Include(x => x.UserInfo).FirstOrDefault(x => x.UserId == userObj.UserId);
 
-            if (dbUser == null)
+            if (dbUser != null)
             {
-                return NotFound("User not found");
+
+                //dbUser.Password = userObj.Password;
+                //dbUser.UserId = userObj.UserId;
+                //dbUser.Role = userObj.Role;
+                ////dbUser.Password = userObj.Password; //in case someone would not put hash, put hashing
+                dbUser.Username = userObj.Username;
+                dbUser.Email = userObj.Email;
+                dbUser.UserInfo = userObj.UserInfo;
+
+                await _usersContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "User has been updated."
+                });
             }
-
-            //dbUser.Password = userObj.Password; //in case someone would not put hash, put hashing
-            dbUser.Username = userObj.Username;
-            dbUser.Role = userObj.Role;
-            dbUser.Email = userObj.Email;
-            dbUser.UserInfo = userObj.UserInfo;
+            return NotFound("User not found");
 
 
-            await _usersContext.SaveChangesAsync();
 
-            return Ok("User has been updated!");
         }
 
         [HttpDelete("delete/{userId}")]
         public async Task<IActionResult> DeleteUser(int userId)
         {
-            var user = await _usersContext.Users.Include(x => x.UserInfo).SingleOrDefaultAsync(x => x.UserId == userId);
+            var user = await _usersContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
             if (user == null)
                 return NotFound();
-            //_authContext.UserInfo.Remove(user.UserInfo);
-            _usersContext.Users.Remove(user);
 
+            _usersContext.Users.Remove(user);
             await _usersContext.SaveChangesAsync();
-            return Ok("usunełem");
+            return Ok(new
+            {
+                Message = "User has been disintegrated."
+            });
         }
 
-        [HttpDelete("deleteme/{username}")]
-        public async Task<IActionResult> DeleteByUsername(string username)
-        {
-            var user = await _usersContext.Users.Include(x => x.UserInfo).SingleOrDefaultAsync(x => x.Username == username);
-            if (user == null)
-                return NotFound();
-            //_authContext.UserInfo.Remove(user.UserInfo);
-            _usersContext.Users.Remove(user);
 
-            await _usersContext.SaveChangesAsync();
-            return Ok("usunełem");
-        }
     }
 }
