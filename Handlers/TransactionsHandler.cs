@@ -7,7 +7,7 @@ namespace SwapMeAngularAuthAPI.Handlers
 {
     public class TransactionsHandler
     {
-        private readonly UsersDbContext _transactionsContext;
+        private readonly TransactionsDbContext _transactionsContext;
 
         public TransactionsHandler(TransactionsDbContext transactionsContext)
         {
@@ -17,11 +17,14 @@ namespace SwapMeAngularAuthAPI.Handlers
         {
             var dbTransaction = new Transaction
             {
+                TransactionId= tradeDto.TransactionId,
+            };
 
 
 
             await _transactionsContext.Transactions.AddAsync(dbTransaction);
             await _transactionsContext.SaveChangesAsync();
+        
         }
     }
 }

@@ -4,7 +4,7 @@ namespace SwapMeAngularAuthAPI.Dtos
 {
     public class TransactionDto
     {
-        public string TransactionId { get; set; }
+        public int TransactionId { get; set; }
         public int BuyerId { get; set; }
         public DateTime EndedOn { get; set; }
 
