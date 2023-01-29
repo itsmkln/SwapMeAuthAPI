@@ -11,15 +11,15 @@ namespace SwapMeAngularAuthAPI.Controllers
     [ApiController]
     public class GamesController : ControllerBase
     {
-        private readonly GamesDbContext _gamesContext;
+        private readonly UsersDbContext _gamesContext;
 
-        public GamesController(GamesDbContext gamesDbContext) 
+        public GamesController(UsersDbContext gamesDbContext) 
         {
             _gamesContext = gamesDbContext;
         }
 
         [HttpPost]
-        public async Task<IActionResult> AddGame(GameDto game)
+        public async Task<IActionResult> AddGame([FromBody] GameDto gameObj)
         {
             return Ok();
         }

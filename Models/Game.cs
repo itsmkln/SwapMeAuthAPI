@@ -9,6 +9,7 @@ namespace SwapMeAngularAuthAPI.Models
         public int Name { get; set; }
 
 
+        public Platform Platform { get; set; }
         public GameImage GameImage { get; set; }
         public Genre Genre { get; set; }
         public Offer Offer { get; set; }

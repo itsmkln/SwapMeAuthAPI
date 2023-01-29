@@ -10,7 +10,7 @@ using SwapMeAngularAuthAPI.Context;
 
 namespace SwapMeAngularAuthAPI.Migrations.GamesDb
 {
-    [DbContext(typeof(GamesDbContext))]
+    [DbContext(typeof(UsersDbContext))]
     [Migration("20230116214506_game")]
     partial class game
     {

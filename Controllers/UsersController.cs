@@ -6,6 +6,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using SwapMeAngularAuthAPI.Context;
 using SwapMeAngularAuthAPI.Dtos;
+using SwapMeAngularAuthAPI.Handlers;
 using SwapMeAngularAuthAPI.Helpers;
 using SwapMeAngularAuthAPI.Models;
 using System.IdentityModel.Tokens.Jwt;
@@ -20,9 +21,12 @@ namespace SwapMeAngularAuthAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly UsersDbContext _usersContext;
-        public UsersController(UsersDbContext appDbContext)
+        private readonly UsersHandler _usersHandler;
+
+        public UsersController(UsersDbContext appDbContext, UsersHandler usersHandler)
         {
             _usersContext = appDbContext;
+            _usersHandler = usersHandler;
         }
 
         [HttpPost("authenticate")]
@@ -37,12 +41,13 @@ namespace SwapMeAngularAuthAPI.Controllers
 
 
             if (user == null)
-                return NotFound(new {Message = "User not found!"});
+                return BadRequest(new {message = "User not found!"});
 
             if (userObj.Password == null || user.Password == null)
             {
                 return BadRequest(new { Message = "Password is null" });
             }
+
 
             if (!PwHasher.VerifyPassword(userObj.Password, user.Password))
             {
@@ -64,6 +69,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             if(userObj == null)
                 return BadRequest();
 
+
             //Check if the username already exists
             if (await CheckIfUsernameExistAsync(userObj.Username))
             {
@@ -77,40 +83,32 @@ namespace SwapMeAngularAuthAPI.Controllers
                 return BadRequest(new { Message = "Email already exists!" });
             }
 
-            var dbUser = new User
-            {
-                Username = userObj.Username,
-                Password = PwHasher.HashPw(userObj.Password),
-                Role = "User",
-                Email = userObj.Email,
-                UserInfo = new UserInfo
-                {
-                    FirstName= userObj.FirstName,
-                    LastName= userObj.LastName,
-                    PhoneNumber= userObj.PhoneNumber,
-                    State= userObj.State,
-                    City= userObj.City, 
-                }
-            };
+            //Check if the phone number already exists
 
-            ////Check if the password is strong
+            if (await CheckIfPhoneNumberExistAsync(userObj.PhoneNumber))
+            {
+                return BadRequest(new { Message = "Phone number already exists!" });
+            }
+
+
+            ////Check if password is strong
             //var pass = CheckPasswordStrength(userObj.Password);
             //if (!string.IsNullOrEmpty(pass))
             //    return BadRequest(new { Message = pass.ToString() });
 
+            await _usersHandler.HandleRegistrationAsync(userObj);
 
-            await _usersContext.Users.AddAsync(dbUser);
-            await _usersContext.SaveChangesAsync();
-            return Ok(new 
-            {
-                Message = "User registered!" 
-            });
+            return Ok(new { Message = "User registered!" });
         }
 
         private Task<bool> CheckIfUsernameExistAsync(string username)
             => _usersContext.Users.AnyAsync(x => x.Username == username);
         private Task<bool> CheckIfEmailExistAsync(string email)
             => _usersContext.Users.AnyAsync(x => x.Email == email);
+        private Task<bool> CheckIfPhoneNumberExistAsync(string phoneNumber)
+            => _usersContext.UserInfo.AnyAsync(x => x.PhoneNumber == phoneNumber);
+
+
 
         private string CheckPasswordStrength(string password)
         {
@@ -242,7 +240,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             await _usersContext.SaveChangesAsync();
             return Ok(new
             {
-                Message = "User has been disintegrated."
+                Message = "User has been deleted."
             });
         }
 

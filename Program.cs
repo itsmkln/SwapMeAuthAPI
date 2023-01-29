@@ -3,6 +3,7 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SwapMeAngularAuthAPI.Context;
+using SwapMeAngularAuthAPI.Handlers;
 using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -18,9 +19,9 @@ builder.Services.AddCors(option =>
 {
     option.AddPolicy("MyPolicy", builder =>
     {
-        builder.AllowAnyOrigin();
-        builder.AllowAnyMethod();
-        builder.AllowAnyHeader();
+        builder.AllowAnyOrigin()
+        .AllowAnyMethod()
+        .AllowAnyHeader();
     });
 });
 
@@ -29,7 +30,7 @@ builder.Services.AddDbContext<UsersDbContext>(option =>
     option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr"));
 });
 
-builder.Services.AddDbContext<GamesDbContext>(option =>
+builder.Services.AddDbContext<UsersDbContext>(option =>
 {
     option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr"));
 });
@@ -53,6 +54,7 @@ builder.Services.AddAuthentication(x =>
     };
 });
 
+builder.Services.AddScoped<UsersHandler>();
 
 var app = builder.Build();
 
