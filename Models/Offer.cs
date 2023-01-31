@@ -14,8 +14,8 @@ namespace SwapMeAngularAuthAPI.Models
         public string Status { get; set; } // new/active/ended/sold
 
 
-        public OfferType OfferType { get; set; } // xchange, sale, xchange+sale
         public Platform Platform { get; set; }
-        public int GameId { get; set; }
+        public OfferType OfferType { get; set; }
+        public Game Game { get; set; } 
     }
 }

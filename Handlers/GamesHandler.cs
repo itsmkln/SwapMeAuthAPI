@@ -19,11 +19,6 @@ namespace SwapMeAngularAuthAPI.Handlers
             {
                 Name = gameObj.Name,
 
-                Platform = new Platform
-                {
-                    Name = gameObj.PlatformName
-                },
-
                 Genre = new Genre
                 {
                     Name = gameObj.GenreName

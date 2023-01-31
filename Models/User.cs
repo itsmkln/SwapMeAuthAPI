@@ -12,6 +12,7 @@ namespace SwapMeAngularAuthAPI.Models
         public string Role { get; set; } = string.Empty; 
         public string Email { get; set; } = string.Empty;
 
-        public UserInfo UserInfo { get; set; } = new UserInfo();
+        public virtual UserInfo UserInfo { get; set; } = new UserInfo();
+        public virtual Offer Offer { get; set; } = new Offer();
     }
 }

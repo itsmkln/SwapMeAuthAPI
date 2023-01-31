@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SwapMeAngularAuthAPI.Models
 {
@@ -9,9 +10,8 @@ namespace SwapMeAngularAuthAPI.Models
         public int Name { get; set; }
 
 
-        public Platform Platform { get; set; }
-        public GameImage GameImage { get; set; }
+
+        public virtual GameImage GameImage { get; set; }
         public Genre Genre { get; set; }
-        public Offer Offer { get; set; }
     }
 }

@@ -20,11 +20,13 @@ namespace SwapMeAngularAuthAPI.Controllers
     [ApiController]
     public class UsersController : ControllerBase
     {
+        private readonly ApplicationDbContext _applicationDbContext;
         private readonly UsersDbContext _usersContext;
         private readonly UsersHandler _usersHandler;
 
-        public UsersController(UsersDbContext appDbContext, UsersHandler usersHandler)
+        public UsersController(ApplicationDbContext applicationDbContext, UsersDbContext appDbContext, UsersHandler usersHandler)
         {
+            _applicationDbContext= applicationDbContext;
             _usersContext = appDbContext;
             _usersHandler = usersHandler;
         }
@@ -71,23 +73,30 @@ namespace SwapMeAngularAuthAPI.Controllers
 
 
             //Check if the username already exists
-            if (await CheckIfUsernameExistAsync(userObj.Username))
+            if (userObj.Username != null)
             {
-                return BadRequest(new { Message = "Username already exists!" });
+                if (await CheckIfUsernameExistAsync(userObj.Username))
+                {
+                    return BadRequest(new { Message = "Username already exists!" });
+                }
             }
 
             //Check if the email already exists
-
-            if (await CheckIfEmailExistAsync(userObj.Email))
+            if (userObj.Email != null)
             {
-                return BadRequest(new { Message = "Email already exists!" });
+                if (await CheckIfEmailExistAsync(userObj.Email))
+                {
+                    return BadRequest(new { Message = "Email already exists!" });
+                }
             }
 
             //Check if the phone number already exists
-
-            if (await CheckIfPhoneNumberExistAsync(userObj.PhoneNumber))
+            if (userObj.PhoneNumber != null)
             {
-                return BadRequest(new { Message = "Phone number already exists!" });
+                if (await CheckIfPhoneNumberExistAsync(userObj.PhoneNumber))
+                {
+                    return BadRequest(new { Message = "Phone number already exists!" });
+                }
             }
 
 

@@ -17,7 +17,6 @@ namespace SwapMeAngularAuthAPI.Helpers
                 byte[] salt;
 
                 rng.GetBytes(salt = new byte[SaltSize]);
-                //rng.GetBytes(salt = new byte[SaltSize]);
                 var key = new Rfc2898DeriveBytes(pw, salt, Iterations);
                 var hash = key.GetBytes(HashSize);
 
