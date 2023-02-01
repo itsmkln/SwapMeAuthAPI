@@ -6,13 +6,13 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
 {
     /// <inheritdoc />
-    public partial class badcontext : Migration
+    public partial class applicationv1 : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.CreateTable(
-                name: "Games.Image",
+                name: "Games.Images",
                 columns: table => new
                 {
                     GameImageId = table.Column<int>(type: "int", nullable: false)
@@ -21,7 +21,7 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Games.Image", x => x.GameImageId);
+                    table.PrimaryKey("PK_Games.Images", x => x.GameImageId);
                 });
 
             migrationBuilder.CreateTable(
@@ -35,6 +35,19 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                 constraints: table =>
                 {
                     table.PrimaryKey("PK_Genres", x => x.GenreId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Offers.Types",
+                columns: table => new
+                {
+                    OfferTypeId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Offers.Types", x => x.OfferTypeId);
                 });
 
             migrationBuilder.CreateTable(
@@ -66,9 +79,9 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                 {
                     table.PrimaryKey("PK_Games", x => x.GameId);
                     table.ForeignKey(
-                        name: "FK_Games_Games.Image_GameImageId",
+                        name: "FK_Games_Games.Images_GameImageId",
                         column: x => x.GameImageId,
-                        principalTable: "Games.Image",
+                        principalTable: "Games.Images",
                         principalColumn: "GameImageId",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
@@ -90,6 +103,7 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    OfferTypeId = table.Column<int>(type: "int", nullable: false),
                     GameId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
@@ -101,25 +115,11 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                         principalTable: "Games",
                         principalColumn: "GameId",
                         onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
-                name: "Offers.Type",
-                columns: table => new
-                {
-                    OfferTypeId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OfferId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Offers.Type", x => x.OfferTypeId);
                     table.ForeignKey(
-                        name: "FK_Offers.Type_Offers_OfferId",
-                        column: x => x.OfferId,
-                        principalTable: "Offers",
-                        principalColumn: "OfferId",
+                        name: "FK_Offers_Offers.Types_OfferTypeId",
+                        column: x => x.OfferTypeId,
+                        principalTable: "Offers.Types",
+                        principalColumn: "OfferTypeId",
                         onDelete: ReferentialAction.Cascade);
                 });
 
@@ -206,9 +206,9 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                 column: "GameId");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Offers.Type_OfferId",
-                table: "Offers.Type",
-                column: "OfferId",
+                name: "IX_Offers_OfferTypeId",
+                table: "Offers",
+                column: "OfferTypeId",
                 unique: true);
 
             migrationBuilder.CreateIndex(
@@ -233,9 +233,6 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
         protected override void Down(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.DropTable(
-                name: "Offers.Type");
-
-            migrationBuilder.DropTable(
                 name: "Platforms");
 
             migrationBuilder.DropTable(
@@ -254,7 +251,10 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                 name: "Games");
 
             migrationBuilder.DropTable(
-                name: "Games.Image");
+                name: "Offers.Types");
+
+            migrationBuilder.DropTable(
+                name: "Games.Images");
 
             migrationBuilder.DropTable(
                 name: "Genres");

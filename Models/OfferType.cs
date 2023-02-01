@@ -8,6 +8,6 @@ namespace SwapMeAngularAuthAPI.Models
         public int OfferTypeId { get; set; }
         public string Name { get; set; }
 
-        public int OfferId { get; set; }
+        public Offer Offer { get; set; }
     }
 }

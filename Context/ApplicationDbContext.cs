@@ -18,7 +18,6 @@ namespace SwapMeAngularAuthAPI.Context
         public DbSet<GameImage> GameImages { get; set; }
         public DbSet<Genre> Genres { get; set; }
 
-
         public DbSet<Offer> Offers { get; set; }
         public DbSet<Platform> Platforms { get; set; }
         public DbSet<OfferType> OfferTypes { get; set; }
@@ -29,11 +28,11 @@ namespace SwapMeAngularAuthAPI.Context
             modelBuilder.Entity<User>().ToTable("Users");
             modelBuilder.Entity<UserInfo>().ToTable("Users.Info");
             modelBuilder.Entity<Game>().ToTable("Games");
-            modelBuilder.Entity<GameImage>().ToTable("Games.Image");
+            modelBuilder.Entity<GameImage>().ToTable("Games.Images");
             modelBuilder.Entity<Genre>().ToTable("Genres");
             modelBuilder.Entity<Offer>().ToTable("Offers");
             modelBuilder.Entity<Platform>().ToTable("Platforms");
-            modelBuilder.Entity<OfferType>().ToTable("Offers.Type");
+            modelBuilder.Entity<OfferType>().ToTable("Offers.Types");
             modelBuilder.Entity<Transaction>().ToTable("Transactions");
         }
     }

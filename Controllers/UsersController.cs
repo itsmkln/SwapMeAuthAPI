@@ -37,7 +37,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             if (userObj == null)
                 return BadRequest();
 
-            var user = await _usersContext.Users
+            var user = await _applicationDbContext.Users
                 .Include(u => u.UserInfo)
                 .FirstOrDefaultAsync(x => x.Username == userObj.Username);
 
@@ -100,10 +100,11 @@ namespace SwapMeAngularAuthAPI.Controllers
             }
 
 
-            ////Check if password is strong
-            //var pass = CheckPasswordStrength(userObj.Password);
-            //if (!string.IsNullOrEmpty(pass))
-            //    return BadRequest(new { Message = pass.ToString() });
+            //Check if password is strong
+            if (userObj.Password == null) return BadRequest() ;
+            var pass = CheckPasswordStrength(userObj.Password);
+            if (!string.IsNullOrEmpty(pass))
+                return BadRequest(new { Message = pass.ToString() });
 
             await _usersHandler.HandleRegistrationAsync(userObj);
 
@@ -111,11 +112,11 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
         private Task<bool> CheckIfUsernameExistAsync(string username)
-            => _usersContext.Users.AnyAsync(x => x.Username == username);
+            => _applicationDbContext.Users.AnyAsync(x => x.Username == username);
         private Task<bool> CheckIfEmailExistAsync(string email)
-            => _usersContext.Users.AnyAsync(x => x.Email == email);
+            => _applicationDbContext.Users.AnyAsync(x => x.Email == email);
         private Task<bool> CheckIfPhoneNumberExistAsync(string phoneNumber)
-            => _usersContext.UserInfo.AnyAsync(x => x.PhoneNumber == phoneNumber);
+            => _applicationDbContext.UserInfo.AnyAsync(x => x.PhoneNumber == phoneNumber);
 
 
 
@@ -162,14 +163,14 @@ namespace SwapMeAngularAuthAPI.Controllers
         [HttpGet("getallusersinfo")]
         public async Task<ActionResult<User>> GetAllUsersData()
         {
-            var users = await _usersContext.Users.Include(x=>x.UserInfo).ToListAsync();
+            var users = await _applicationDbContext.Users.Include(x=>x.UserInfo).ToListAsync();
             return Ok(users);
         }
 
         [HttpGet("{username}")]
         public async Task<IActionResult> GetUser([FromRoute] string username)
         {
-            var users = await _usersContext.Users.Include(x => x.UserInfo).ToListAsync();
+            var users = await _applicationDbContext.Users.Include(x => x.UserInfo).ToListAsync();
             var user = users.FirstOrDefault(x => x.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase));
             if(user == null)
             {
@@ -190,7 +191,7 @@ namespace SwapMeAngularAuthAPI.Controllers
                 return NotFound();
             }
 
-            var dbUser = await _usersContext.Users.SingleOrDefaultAsync(x => x.UserId == userId);
+            var dbUser = await _applicationDbContext.Users.SingleOrDefaultAsync(x => x.UserId == userId);
 
 
             if (dbUser == null)
@@ -199,7 +200,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             }
 
             dbUser.Role = "Admin";
-            await _usersContext.SaveChangesAsync();
+            await _applicationDbContext.SaveChangesAsync();
             return Ok("huj");
 
         }
@@ -212,7 +213,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             {
                 return BadRequest();
             }
-            var dbUser = _usersContext.Users.Include(x => x.UserInfo).FirstOrDefault(x => x.UserId == userObj.UserId);
+            var dbUser = _applicationDbContext.Users.Include(x => x.UserInfo).FirstOrDefault(x => x.UserId == userObj.UserId);
 
             if (dbUser != null)
             {
@@ -225,7 +226,7 @@ namespace SwapMeAngularAuthAPI.Controllers
                 dbUser.Email = userObj.Email;
                 dbUser.UserInfo = userObj.UserInfo;
 
-                await _usersContext.SaveChangesAsync();
+                await _applicationDbContext.SaveChangesAsync();
 
                 return Ok(new
                 {
@@ -241,12 +242,12 @@ namespace SwapMeAngularAuthAPI.Controllers
         [HttpDelete("delete/{userId}")]
         public async Task<IActionResult> DeleteUser(int userId)
         {
-            var user = await _usersContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
+            var user = await _applicationDbContext.Users.FirstOrDefaultAsync(x => x.UserId == userId);
             if (user == null)
                 return NotFound();
 
-            _usersContext.Users.Remove(user);
-            await _usersContext.SaveChangesAsync();
+            _applicationDbContext.Users.Remove(user);
+            await _applicationDbContext.SaveChangesAsync();
             return Ok(new
             {
                 Message = "User has been deleted."
