@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SwapMeAngularAuthAPI.Models
+namespace SwapMeAngularAuthAPI.Models.Entities
 {
     public class OfferType
     {
@@ -8,6 +8,6 @@ namespace SwapMeAngularAuthAPI.Models
         public int OfferTypeId { get; set; }
         public string Name { get; set; }
 
-        public Offer Offer { get; set; }
+        public Offer? Offer { get; set; }
     }
 }

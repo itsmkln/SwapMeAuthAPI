@@ -1,17 +1,17 @@
 ﻿using SwapMeAngularAuthAPI.Context;
 using SwapMeAngularAuthAPI.Dtos;
 using SwapMeAngularAuthAPI.Helpers;
-using SwapMeAngularAuthAPI.Models;
+using SwapMeAngularAuthAPI.Models.Entities;
 
 namespace SwapMeAngularAuthAPI.Handlers
 {
     public class GamesHandler
     {
-        private readonly GamesDbContext _gamesContext;
+        private readonly ApplicationDbContext _applicationContext;
 
-        public GamesHandler(GamesDbContext gamesContext)
+        public GamesHandler(ApplicationDbContext applicationContext)
         {
-            _gamesContext = gamesContext;
+            _applicationContext = applicationContext;
         }
         public async Task HandleGameAddAsync(GameDto gameObj)
         {
@@ -24,14 +24,14 @@ namespace SwapMeAngularAuthAPI.Handlers
                     Name = gameObj.GenreName
                 },
 
-                GameImage = new GameImage
+                Image = new Image
                 {
-                    Image = gameObj.Image
+                    ImageFile = gameObj.ImageFile
                 }
             };
 
-            await _gamesContext.Games.AddAsync(dbGame);
-            await _gamesContext.SaveChangesAsync();
+            await _applicationContext.Games.AddAsync(dbGame);
+            await _applicationContext.SaveChangesAsync();
         }
     }
 }

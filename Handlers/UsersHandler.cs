@@ -1,17 +1,17 @@
 ﻿using SwapMeAngularAuthAPI.Context;
 using SwapMeAngularAuthAPI.Dtos;
 using SwapMeAngularAuthAPI.Helpers;
-using SwapMeAngularAuthAPI.Models;
+using SwapMeAngularAuthAPI.Models.Entities;
 
 namespace SwapMeAngularAuthAPI.Handlers
 {
     public class UsersHandler
     {
-        private readonly UsersDbContext _usersContext;
+        private readonly ApplicationDbContext _applicationContext;
 
-        public UsersHandler(UsersDbContext usersContext)
+        public UsersHandler(ApplicationDbContext applicationContext)
         {
-             _usersContext = usersContext;
+             _applicationContext = applicationContext;
         }
         public async Task HandleRegistrationAsync(UserDto userObj)
         {
@@ -37,8 +37,8 @@ namespace SwapMeAngularAuthAPI.Handlers
             //    return BadRequest(new { Message = pass.ToString() });
 
 
-            await _usersContext.Users.AddAsync(dbUser);
-            await _usersContext.SaveChangesAsync();
+            await _applicationContext.Users.AddAsync(dbUser);
+            await _applicationContext.SaveChangesAsync();
         }
     }
 }

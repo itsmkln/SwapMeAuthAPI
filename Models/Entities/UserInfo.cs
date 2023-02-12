@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SwapMeAngularAuthAPI.Models
+namespace SwapMeAngularAuthAPI.Models.Entities
 {
     public class UserInfo
     {
@@ -13,7 +13,6 @@ namespace SwapMeAngularAuthAPI.Models
         public string? City { get; set; }
         public string? State { get; set; }
 
-        [ForeignKey("UserId")]
-        public int UserId { get; set; }
+        public User User { get; set; }
     }
 }

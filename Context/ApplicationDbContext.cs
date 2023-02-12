@@ -1,6 +1,7 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SwapMeAngularAuthAPI.Dtos;
-using SwapMeAngularAuthAPI.Models;
+using SwapMeAngularAuthAPI.Models.Entities;
+using System.Drawing;
 
 namespace SwapMeAngularAuthAPI.Context
 {
@@ -15,7 +16,7 @@ namespace SwapMeAngularAuthAPI.Context
         public DbSet<UserInfo> UserInfo { get; set; }
 
         public DbSet<Game> Games { get; set; }
-        public DbSet<GameImage> GameImages { get; set; }
+        public DbSet<Image> Images { get; set; }
         public DbSet<Genre> Genres { get; set; }
 
         public DbSet<Offer> Offers { get; set; }
@@ -25,14 +26,15 @@ namespace SwapMeAngularAuthAPI.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+
             modelBuilder.Entity<User>().ToTable("Users");
-            modelBuilder.Entity<UserInfo>().ToTable("Users.Info");
+            modelBuilder.Entity<UserInfo>().ToTable("UsersInfo");
             modelBuilder.Entity<Game>().ToTable("Games");
-            modelBuilder.Entity<GameImage>().ToTable("Games.Images");
+            modelBuilder.Entity<Image>().ToTable("Images");
             modelBuilder.Entity<Genre>().ToTable("Genres");
             modelBuilder.Entity<Offer>().ToTable("Offers");
             modelBuilder.Entity<Platform>().ToTable("Platforms");
-            modelBuilder.Entity<OfferType>().ToTable("Offers.Types");
+            modelBuilder.Entity<OfferType>().ToTable("OfferTypes");
             modelBuilder.Entity<Transaction>().ToTable("Transactions");
         }
     }

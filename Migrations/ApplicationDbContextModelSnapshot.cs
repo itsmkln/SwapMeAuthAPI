@@ -8,7 +8,7 @@ using SwapMeAngularAuthAPI.Context;
 
 #nullable disable
 
-namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
+namespace SwapMeAngularAuthAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
     partial class ApplicationDbContextModelSnapshot : ModelSnapshot
@@ -22,7 +22,7 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Game", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Game", b =>
                 {
                     b.Property<int>("GameId")
                         .ValueGeneratedOnAdd()
@@ -30,42 +30,16 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameId"));
 
-                    b.Property<int>("GameImageId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("GenreId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("Name")
-                        .HasColumnType("int");
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
 
                     b.HasKey("GameId");
-
-                    b.HasIndex("GameImageId");
-
-                    b.HasIndex("GenreId");
 
                     b.ToTable("Games", (string)null);
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.GameImage", b =>
-                {
-                    b.Property<int>("GameImageId")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameImageId"));
-
-                    b.Property<byte[]>("Image")
-                        .IsRequired()
-                        .HasColumnType("varbinary(max)");
-
-                    b.HasKey("GameImageId");
-
-                    b.ToTable("Games.Images", (string)null);
-                });
-
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Genre", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Genre", b =>
                 {
                     b.Property<int>("GenreId")
                         .ValueGeneratedOnAdd()
@@ -73,16 +47,46 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GenreId"));
 
+                    b.Property<int?>("GameId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("GenreId");
 
+                    b.HasIndex("GameId")
+                        .IsUnique()
+                        .HasFilter("[GameId] IS NOT NULL");
+
                     b.ToTable("Genres", (string)null);
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Offer", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Image", b =>
+                {
+                    b.Property<int>("GameImageId")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("GameImageId"));
+
+                    b.Property<int?>("GameId")
+                        .HasColumnType("int");
+
+                    b.Property<byte[]>("ImageFile")
+                        .HasColumnType("varbinary(max)");
+
+                    b.HasKey("GameImageId");
+
+                    b.HasIndex("GameId")
+                        .IsUnique()
+                        .HasFilter("[GameId] IS NOT NULL");
+
+                    b.ToTable("Images", (string)null);
+                });
+
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Offer", b =>
                 {
                     b.Property<int>("OfferId")
                         .ValueGeneratedOnAdd()
@@ -96,7 +100,13 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                     b.Property<int>("GameId")
                         .HasColumnType("int");
 
+                    b.Property<bool>("IsPhysical")
+                        .HasColumnType("bit");
+
                     b.Property<int>("OfferTypeId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("PlatformId")
                         .HasColumnType("int");
 
                     b.Property<double>("Price")
@@ -109,8 +119,8 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<bool>("isPhysical")
-                        .HasColumnType("bit");
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
 
                     b.HasKey("OfferId");
 
@@ -119,10 +129,15 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                     b.HasIndex("OfferTypeId")
                         .IsUnique();
 
+                    b.HasIndex("PlatformId")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Offers", (string)null);
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.OfferType", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.OfferType", b =>
                 {
                     b.Property<int>("OfferTypeId")
                         .ValueGeneratedOnAdd()
@@ -136,10 +151,10 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
 
                     b.HasKey("OfferTypeId");
 
-                    b.ToTable("Offers.Types", (string)null);
+                    b.ToTable("OfferTypes", (string)null);
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Platform", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Platform", b =>
                 {
                     b.Property<int>("PlatformId")
                         .ValueGeneratedOnAdd()
@@ -151,18 +166,12 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OfferId")
-                        .HasColumnType("int");
-
                     b.HasKey("PlatformId");
-
-                    b.HasIndex("OfferId")
-                        .IsUnique();
 
                     b.ToTable("Platforms", (string)null);
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Transaction", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Transaction", b =>
                 {
                     b.Property<int>("TransactionId")
                         .ValueGeneratedOnAdd()
@@ -176,15 +185,28 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                     b.Property<DateTime>("EndedOn")
                         .HasColumnType("datetime2");
 
-                    b.Property<int>("OfferId")
+                    b.Property<int?>("OfferId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int?>("UserId")
                         .HasColumnType("int");
 
                     b.HasKey("TransactionId");
 
+                    b.HasIndex("OfferId")
+                        .IsUnique()
+                        .HasFilter("[OfferId] IS NOT NULL");
+
+                    b.HasIndex("UserId");
+
                     b.ToTable("Transactions", (string)null);
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.User", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.User", b =>
                 {
                     b.Property<int>("UserId")
                         .ValueGeneratedOnAdd()
@@ -196,9 +218,6 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("OfferId")
-                        .HasColumnType("int");
-
                     b.Property<string>("Password")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
@@ -207,18 +226,22 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
+                    b.Property<int>("UserInfoId")
+                        .HasColumnType("int");
+
                     b.Property<string>("Username")
                         .IsRequired()
                         .HasColumnType("nvarchar(max)");
 
                     b.HasKey("UserId");
 
-                    b.HasIndex("OfferId");
+                    b.HasIndex("UserInfoId")
+                        .IsUnique();
 
                     b.ToTable("Users", (string)null);
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.UserInfo", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.UserInfo", b =>
                 {
                     b.Property<int>("UserInfoId")
                         .ValueGeneratedOnAdd()
@@ -243,97 +266,120 @@ namespace SwapMeAngularAuthAPI.Migrations.ApplicationDb
                     b.Property<string>("State")
                         .HasColumnType("nvarchar(max)");
 
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
                     b.HasKey("UserInfoId");
 
-                    b.HasIndex("UserId")
-                        .IsUnique();
-
-                    b.ToTable("Users.Info", (string)null);
+                    b.ToTable("UsersInfo", (string)null);
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Game", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Genre", b =>
                 {
-                    b.HasOne("SwapMeAngularAuthAPI.Models.GameImage", "GameImage")
-                        .WithMany()
-                        .HasForeignKey("GameImageId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("SwapMeAngularAuthAPI.Models.Entities.Game", "Game")
+                        .WithOne("Genre")
+                        .HasForeignKey("SwapMeAngularAuthAPI.Models.Entities.Genre", "GameId");
 
-                    b.HasOne("SwapMeAngularAuthAPI.Models.Genre", "Genre")
-                        .WithMany()
-                        .HasForeignKey("GenreId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("GameImage");
-
-                    b.Navigation("Genre");
+                    b.Navigation("Game");
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Offer", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Image", b =>
                 {
-                    b.HasOne("SwapMeAngularAuthAPI.Models.Game", "Game")
+                    b.HasOne("SwapMeAngularAuthAPI.Models.Entities.Game", "Game")
+                        .WithOne("Image")
+                        .HasForeignKey("SwapMeAngularAuthAPI.Models.Entities.Image", "GameId");
+
+                    b.Navigation("Game");
+                });
+
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Offer", b =>
+                {
+                    b.HasOne("SwapMeAngularAuthAPI.Models.Entities.Game", "Game")
                         .WithMany()
                         .HasForeignKey("GameId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("SwapMeAngularAuthAPI.Models.OfferType", null)
+                    b.HasOne("SwapMeAngularAuthAPI.Models.Entities.OfferType", null)
                         .WithOne("Offer")
-                        .HasForeignKey("SwapMeAngularAuthAPI.Models.Offer", "OfferTypeId")
+                        .HasForeignKey("SwapMeAngularAuthAPI.Models.Entities.Offer", "OfferTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SwapMeAngularAuthAPI.Models.Entities.Platform", "Platform")
+                        .WithOne("Offer")
+                        .HasForeignKey("SwapMeAngularAuthAPI.Models.Entities.Offer", "PlatformId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("SwapMeAngularAuthAPI.Models.Entities.User", "User")
+                        .WithMany("Offers")
+                        .HasForeignKey("UserId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
                     b.Navigation("Game");
+
+                    b.Navigation("Platform");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Platform", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Transaction", b =>
                 {
-                    b.HasOne("SwapMeAngularAuthAPI.Models.Offer", null)
-                        .WithOne("Platform")
-                        .HasForeignKey("SwapMeAngularAuthAPI.Models.Platform", "OfferId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.HasOne("SwapMeAngularAuthAPI.Models.Entities.Offer", "Offer")
+                        .WithOne("Transaction")
+                        .HasForeignKey("SwapMeAngularAuthAPI.Models.Entities.Transaction", "OfferId");
+
+                    b.HasOne("SwapMeAngularAuthAPI.Models.Entities.User", "User")
+                        .WithMany("Transactions")
+                        .HasForeignKey("UserId");
+
+                    b.Navigation("Offer");
+
+                    b.Navigation("User");
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.User", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.User", b =>
                 {
-                    b.HasOne("SwapMeAngularAuthAPI.Models.Offer", "Offer")
-                        .WithMany()
-                        .HasForeignKey("OfferId")
+                    b.HasOne("SwapMeAngularAuthAPI.Models.Entities.UserInfo", "UserInfo")
+                        .WithOne("User")
+                        .HasForeignKey("SwapMeAngularAuthAPI.Models.Entities.User", "UserInfoId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
+                    b.Navigation("UserInfo");
+                });
+
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Game", b =>
+                {
+                    b.Navigation("Genre");
+
+                    b.Navigation("Image");
+                });
+
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Offer", b =>
+                {
+                    b.Navigation("Transaction");
+                });
+
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.OfferType", b =>
+                {
                     b.Navigation("Offer");
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.UserInfo", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.Platform", b =>
                 {
-                    b.HasOne("SwapMeAngularAuthAPI.Models.User", null)
-                        .WithOne("UserInfo")
-                        .HasForeignKey("SwapMeAngularAuthAPI.Models.UserInfo", "UserId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
+                    b.Navigation("Offer");
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Offer", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.User", b =>
                 {
-                    b.Navigation("Platform")
-                        .IsRequired();
+                    b.Navigation("Offers");
+
+                    b.Navigation("Transactions");
                 });
 
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.OfferType", b =>
+            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.Entities.UserInfo", b =>
                 {
-                    b.Navigation("Offer")
-                        .IsRequired();
-                });
-
-            modelBuilder.Entity("SwapMeAngularAuthAPI.Models.User", b =>
-                {
-                    b.Navigation("UserInfo")
+                    b.Navigation("User")
                         .IsRequired();
                 });
 #pragma warning restore 612, 618

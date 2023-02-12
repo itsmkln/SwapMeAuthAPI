@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using SwapMeAngularAuthAPI.Dtos;
-using SwapMeAngularAuthAPI.Models;
+using SwapMeAngularAuthAPI.Models.Entities;
 
 namespace SwapMeAngularAuthAPI.Context
 {

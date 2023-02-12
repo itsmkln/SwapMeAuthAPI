@@ -8,7 +8,7 @@ using SwapMeAngularAuthAPI.Context;
 using SwapMeAngularAuthAPI.Dtos;
 using SwapMeAngularAuthAPI.Handlers;
 using SwapMeAngularAuthAPI.Helpers;
-using SwapMeAngularAuthAPI.Models;
+using SwapMeAngularAuthAPI.Models.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using System.Text;
@@ -21,13 +21,11 @@ namespace SwapMeAngularAuthAPI.Controllers
     public class UsersController : ControllerBase
     {
         private readonly ApplicationDbContext _applicationDbContext;
-        private readonly UsersDbContext _usersContext;
         private readonly UsersHandler _usersHandler;
 
-        public UsersController(ApplicationDbContext applicationDbContext, UsersDbContext appDbContext, UsersHandler usersHandler)
+        public UsersController(ApplicationDbContext applicationDbContext, UsersHandler usersHandler)
         {
             _applicationDbContext= applicationDbContext;
-            _usersContext = appDbContext;
             _usersHandler = usersHandler;
         }
 
@@ -64,6 +62,8 @@ namespace SwapMeAngularAuthAPI.Controllers
                 Message = "Login success!"
             });
         }
+
+
 
         [HttpPost("register")]
         public async Task<IActionResult> Register([FromBody] UserDto userObj)
@@ -217,7 +217,7 @@ namespace SwapMeAngularAuthAPI.Controllers
 
             if (dbUser != null)
             {
-
+                _applicationDbContext.Entry(dbUser).CurrentValues.SetValues(userObj);
                 //dbUser.Password = userObj.Password;
                 //dbUser.UserId = userObj.UserId;
                 //dbUser.Role = userObj.Role;

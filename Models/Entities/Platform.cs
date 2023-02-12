@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace SwapMeAngularAuthAPI.Models
+namespace SwapMeAngularAuthAPI.Models.Entities
 {
     public class Platform
     {
@@ -8,6 +8,6 @@ namespace SwapMeAngularAuthAPI.Models
         public int PlatformId { get; set; }
         public string Name { get; set; }
 
-        public int OfferId { get; set; }
+        public Offer? Offer { get; set; }
     }
 }
