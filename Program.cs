@@ -4,6 +4,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.IdentityModel.Tokens;
 using SwapMeAngularAuthAPI.Context;
 using SwapMeAngularAuthAPI.Handlers;
+using SwapMeAngularAuthAPI.Handlers.Required;
 using System.Text;
 using System.Text.Json.Serialization;
 
@@ -11,8 +12,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers().AddJsonOptions(x =>
-                x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles); //changed as cannot get all due to large object
+builder.Services.AddControllers()
+    .AddJsonOptions(x => x.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles) //changed as cannot get all due to large object
+    .AddJsonOptions(options => options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull); //remove nulls from json repsonse
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -30,13 +32,7 @@ builder.Services.AddCors(option =>
 
 builder.Services.AddDbContext<ApplicationDbContext>(option =>
 {
-    option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr"));
-});
-
-
-builder.Services.AddDbContext<UsersDbContext>(option =>
-{
-    option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr"));
+    option.UseSqlServer(builder.Configuration.GetConnectionString("SqlServerConnStr")).EnableSensitiveDataLogging();
 });
 
 
@@ -65,8 +61,15 @@ builder.Services.AddScoped<GamesHandler>();
 builder.Services.AddScoped<OfferTypesHandler>();
 builder.Services.AddScoped<PlatformsHandler>();
 builder.Services.AddScoped<GenresHandler>();
+builder.Services.AddScoped<OffersHandler>();
+builder.Services.AddScoped<RequiredGenresHandler>();
+builder.Services.AddScoped<RequiredPlatformsHandler>();
+builder.Services.AddScoped<RequiredGamesHandler>();
 
 var app = builder.Build();
+
+
+
 
 // Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())

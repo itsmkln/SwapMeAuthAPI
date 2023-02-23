@@ -19,15 +19,12 @@ namespace SwapMeAngularAuthAPI.Handlers
             {
                 Name = gameObj.Name,
 
-                Genre = new Genre
-                {
-                    Name = gameObj.GenreName
-                },
+                GenreId = gameObj.GenreId,
 
-                Image = new Image
-                {
-                    ImageFile = gameObj.ImageFile
-                }
+                //Image = new Image
+                //{
+                //    ImageFile = gameObj.ImageFile
+                //}
             };
 
             await _applicationContext.Games.AddAsync(dbGame);

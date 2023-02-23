@@ -12,10 +12,9 @@ namespace SwapMeAngularAuthAPI.Models.Entities
         public string Role { get; set; } = string.Empty;
         public string Email { get; set; } = string.Empty;
 
-        public UserInfo UserInfo { get; set; } = new UserInfo();
-        public int UserInfoId { get; set; }
-        public List<Offer>? Offers { get; set; }
-        public List<Transaction>? Transactions { get; set; }
+        public UserInfo UserInfo { get; set; }
+        public List<Offer>? Offers { get; set; } = new List<Offer>();
+        public List<Transaction>? Transactions { get; set; } = new List<Transaction>();
 
     }
 }

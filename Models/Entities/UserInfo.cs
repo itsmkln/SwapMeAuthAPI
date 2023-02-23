@@ -13,6 +13,7 @@ namespace SwapMeAngularAuthAPI.Models.Entities
         public string? City { get; set; }
         public string? State { get; set; }
 
-        public User User { get; set; }
+        public User? User { get; set; }
+        public int UserId { get; set; }
     }
 }

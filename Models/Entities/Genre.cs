@@ -8,7 +8,6 @@ namespace SwapMeAngularAuthAPI.Models.Entities
         public int GenreId { get; set; }
         public string Name { get; set; }
 
-        public Game? Game { get; set; }
-        public int? GameId { get; set; }
+        public List<Game>? Games { get; set; } = new List<Game>();
     }
 }

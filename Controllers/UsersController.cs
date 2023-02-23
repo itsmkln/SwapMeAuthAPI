@@ -8,6 +8,7 @@ using SwapMeAngularAuthAPI.Context;
 using SwapMeAngularAuthAPI.Dtos;
 using SwapMeAngularAuthAPI.Handlers;
 using SwapMeAngularAuthAPI.Helpers;
+using SwapMeAngularAuthAPI.Models;
 using SwapMeAngularAuthAPI.Models.Entities;
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
@@ -206,25 +207,62 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
 
+        //[HttpPost("update")]
+        //public async Task<IActionResult> Update(User userObj)
+        //{
+        //    if (userObj == null)
+        //    {
+        //        return BadRequest();
+        //    }
+        //    var dbUser = await _applicationDbContext.Users.Include(x => x.UserInfo).FirstOrDefaultAsync(x => x.UserId == userObj.UserId);
+
+        //    if (dbUser != null)
+        //    {
+        //        //dbUser.Password = userObj.Password;
+        //        //dbUser.UserId = userObj.UserId;
+        //        //dbUser.Role = userObj.Role;
+        //        ////dbUser.Password = userObj.Password; //in case someone would not put hash, put hashing
+        //        dbUser.Username = userObj.Username;
+        //        dbUser.Email = userObj.Email;
+        //        dbUser.UserInfo.FirstName = userObj.UserInfo.FirstName;
+        //        dbUser.UserInfo.LastName = userObj.UserInfo.LastName;
+        //        dbUser.UserInfo.PhoneNumber = userObj.UserInfo.PhoneNumber;
+        //        dbUser.UserInfo.City = userObj.UserInfo.City;
+        //        dbUser.UserInfo.State = userObj.UserInfo.State; 
+
+        //    await _applicationDbContext.SaveChangesAsync();
+
+        //        return Ok(new
+        //        {
+        //            Message = "User has been updated."
+        //        });
+        //    }
+        //    return NotFound("User not found");
+
+        //}
+
         [HttpPost("update")]
-        public async Task<IActionResult> Update([FromBody] User userObj)
+        public async Task<IActionResult> Update(UserDto userObj)
         {
             if (userObj == null)
             {
                 return BadRequest();
             }
-            var dbUser = _applicationDbContext.Users.Include(x => x.UserInfo).FirstOrDefault(x => x.UserId == userObj.UserId);
+            var dbUser = await _applicationDbContext.Users.Include(x => x.UserInfo).FirstOrDefaultAsync(x => x.UserId == userObj.UserId);
 
             if (dbUser != null)
             {
-                _applicationDbContext.Entry(dbUser).CurrentValues.SetValues(userObj);
                 //dbUser.Password = userObj.Password;
                 //dbUser.UserId = userObj.UserId;
                 //dbUser.Role = userObj.Role;
                 ////dbUser.Password = userObj.Password; //in case someone would not put hash, put hashing
                 dbUser.Username = userObj.Username;
                 dbUser.Email = userObj.Email;
-                dbUser.UserInfo = userObj.UserInfo;
+                dbUser.UserInfo.FirstName = userObj.FirstName;
+                dbUser.UserInfo.LastName = userObj.LastName;
+                dbUser.UserInfo.PhoneNumber = userObj.PhoneNumber;
+                dbUser.UserInfo.City = userObj.City;
+                dbUser.UserInfo.State = userObj.State;
 
                 await _applicationDbContext.SaveChangesAsync();
 
@@ -235,9 +273,8 @@ namespace SwapMeAngularAuthAPI.Controllers
             }
             return NotFound("User not found");
 
-
-
         }
+
 
         [HttpDelete("delete/{userId}")]
         public async Task<IActionResult> DeleteUser(int userId)

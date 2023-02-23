@@ -1,7 +1,7 @@
 ﻿using SwapMeAngularAuthAPI.Context;
 using SwapMeAngularAuthAPI.Models.Entities;
 
-namespace SwapMeAngularAuthAPI.Handlers
+namespace SwapMeAngularAuthAPI.Handlers.Required
 {
     public class OfferTypesHandler
     {
@@ -11,15 +11,30 @@ namespace SwapMeAngularAuthAPI.Handlers
         {
             _applicationContext = applicationContext;
         }
-        public async Task HandleOfferTypesAddAsync(OfferType offerTypeObj)
+        public async Task AddRequiredOfferTypesAsync()
         {
             var dbOfferType = new OfferType
             {
-                Name = offerTypeObj.Name
+                Name = "Sell"
+            };
+
+            await _applicationContext.OfferTypes.AddAsync(dbOfferType);
+
+            dbOfferType = new OfferType
+            {
+                Name = "Exchange"
+            };
+
+            await _applicationContext.OfferTypes.AddAsync(dbOfferType);
+
+            dbOfferType = new OfferType
+            {
+                Name = "Sell or exchange"
             };
 
             await _applicationContext.OfferTypes.AddAsync(dbOfferType);
             await _applicationContext.SaveChangesAsync();
+
         }
     }
 }

@@ -12,6 +12,7 @@ namespace SwapMeAngularAuthAPI.Context
 
         }
 
+
         public DbSet<User> Users { get; set; }
         public DbSet<UserInfo> UserInfo { get; set; }
 
@@ -26,16 +27,68 @@ namespace SwapMeAngularAuthAPI.Context
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<User>(eb =>
+            {
+                eb.HasMany(u => u.Offers)
+                .WithOne(o => o.Seller)
+                .HasForeignKey(o => o.SellerId);
 
-            modelBuilder.Entity<User>().ToTable("Users");
-            modelBuilder.Entity<UserInfo>().ToTable("UsersInfo");
-            modelBuilder.Entity<Game>().ToTable("Games");
-            modelBuilder.Entity<Image>().ToTable("Images");
-            modelBuilder.Entity<Genre>().ToTable("Genres");
-            modelBuilder.Entity<Offer>().ToTable("Offers");
-            modelBuilder.Entity<Platform>().ToTable("Platforms");
-            modelBuilder.Entity<OfferType>().ToTable("OfferTypes");
-            modelBuilder.Entity<Transaction>().ToTable("Transactions");
+                eb.HasMany(u => u.Transactions)
+                .WithOne(t => t.Buyer)
+                .HasForeignKey(t => t.BuyerId);
+
+                eb.HasOne(u => u.UserInfo)
+                .WithOne(ui => ui.User)
+                .HasForeignKey<UserInfo>(ui => ui.UserId);
+            });
+
+            modelBuilder.Entity<Offer>(eb =>
+            {
+                eb.HasOne(o => o.OfferType)
+                .WithOne(ot => ot.Offer)
+                .HasForeignKey<Offer>(o => o.OfferTypeId);
+
+                eb.HasOne(o => o.Platform)
+                .WithOne(p => p.Offer)
+                .HasForeignKey<Offer>(o => o.PlatformId);
+
+                eb.HasOne(o => o.Game)
+                .WithMany(g => g.Offers)
+                .HasForeignKey(o => o.GameId);
+
+                eb.HasOne(o => o.Transaction)
+                .WithOne(t => t.Offer)
+                .HasForeignKey<Transaction>(t => t.OfferId);
+            });
+
+            modelBuilder.Entity<Game>(eb =>
+            {
+                eb.HasOne(g => g.Image)
+                .WithOne(i => i.Game)
+                .HasForeignKey<Image>(i => i.GameId);
+
+                //eb.HasOne(g => g.Genre)
+                //.WithOne(ge => ge.Game)
+                //.HasForeignKey<Game>(g => g.GenreId);
+            });
+
+            modelBuilder.Entity<Genre>(eb =>
+            {
+                eb.HasMany(ge => ge.Games)
+                .WithOne(g => g.Genre)
+                .HasForeignKey(g => g.GenreId);
+            });
+
+
+            //modelBuilder.Entity<User>().ToTable("Users");
+            //modelBuilder.Entity<UserInfo>().ToTable("UsersInfo");
+            //modelBuilder.Entity<Game>().ToTable("Games");
+            //modelBuilder.Entity<Image>().ToTable("Images");
+            //modelBuilder.Entity<Genre>().ToTable("Genres");
+            //modelBuilder.Entity<Offer>().ToTable("Offers");
+            //modelBuilder.Entity<Platform>().ToTable("Platforms");
+            //modelBuilder.Entity<OfferType>().ToTable("OfferTypes");
+            //modelBuilder.Entity<Transaction>().ToTable("Transactions");
         }
     }
 }

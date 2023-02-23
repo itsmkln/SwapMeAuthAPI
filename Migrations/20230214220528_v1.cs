@@ -38,20 +38,32 @@ namespace SwapMeAngularAuthAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "UsersInfo",
+                name: "Platforms",
                 columns: table => new
                 {
-                    UserInfoId = table.Column<int>(type: "int", nullable: false)
+                    PlatformId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
-                    State = table.Column<string>(type: "nvarchar(max)", nullable: true)
+                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_UsersInfo", x => x.UserInfoId);
+                    table.PrimaryKey("PK_Platforms", x => x.PlatformId);
+                });
+
+            migrationBuilder.CreateTable(
+                name: "Users",
+                columns: table => new
+                {
+                    UserId = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Users", x => x.UserId);
                 });
 
             migrationBuilder.CreateTable(
@@ -79,7 +91,7 @@ namespace SwapMeAngularAuthAPI.Migrations
                 {
                     GameImageId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    ImageFile = table.Column<byte[]>(type: "varbinary(max)", nullable: false),
+                    ImageFile = table.Column<byte[]>(type: "varbinary(max)", nullable: true),
                     GameId = table.Column<int>(type: "int", nullable: true)
                 },
                 constraints: table =>
@@ -93,42 +105,19 @@ namespace SwapMeAngularAuthAPI.Migrations
                 });
 
             migrationBuilder.CreateTable(
-                name: "Users",
-                columns: table => new
-                {
-                    UserId = table.Column<int>(type: "int", nullable: false)
-                        .Annotation("SqlServer:Identity", "1, 1"),
-                    Username = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Password = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Role = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    UserInfoId = table.Column<int>(type: "int", nullable: false)
-                },
-                constraints: table =>
-                {
-                    table.PrimaryKey("PK_Users", x => x.UserId);
-                    table.ForeignKey(
-                        name: "FK_Users_UsersInfo_UserInfoId",
-                        column: x => x.UserInfoId,
-                        principalTable: "UsersInfo",
-                        principalColumn: "UserInfoId",
-                        onDelete: ReferentialAction.Cascade);
-                });
-
-            migrationBuilder.CreateTable(
                 name: "Offers",
                 columns: table => new
                 {
                     OfferId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    SellerId = table.Column<int>(type: "int", nullable: false),
                     IsPhysical = table.Column<bool>(type: "bit", nullable: false),
                     CreatedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Price = table.Column<double>(type: "float", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OfferTypeId = table.Column<int>(type: "int", nullable: false),
-                    UserId = table.Column<int>(type: "int", nullable: false),
-                    GameId = table.Column<int>(type: "int", nullable: false)
+                    PlatformId = table.Column<int>(type: "int", nullable: false),
+                    GameId = table.Column<int>(type: "int", nullable: false),
+                    SellerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -138,38 +127,49 @@ namespace SwapMeAngularAuthAPI.Migrations
                         column: x => x.GameId,
                         principalTable: "Games",
                         principalColumn: "GameId",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_Offers_OfferTypes_OfferTypeId",
                         column: x => x.OfferTypeId,
                         principalTable: "OfferTypes",
                         principalColumn: "OfferTypeId",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
-                        name: "FK_Offers_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Offers_Platforms_PlatformId",
+                        column: x => x.PlatformId,
+                        principalTable: "Platforms",
+                        principalColumn: "PlatformId",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Offers_Users_SellerId",
+                        column: x => x.SellerId,
                         principalTable: "Users",
                         principalColumn: "UserId",
-                        onDelete: ReferentialAction.NoAction);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
-                name: "Platforms",
+                name: "UserInfo",
                 columns: table => new
                 {
-                    PlatformId = table.Column<int>(type: "int", nullable: false)
+                    UserInfoId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    OfferId = table.Column<int>(type: "int", nullable: true)
+                    FirstName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    LastName = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PhoneNumber = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    City = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    State = table.Column<string>(type: "nvarchar(max)", nullable: true),
+                    UserId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_Platforms", x => x.PlatformId);
+                    table.PrimaryKey("PK_UserInfo", x => x.UserInfoId);
                     table.ForeignKey(
-                        name: "FK_Platforms_Offers_OfferId",
-                        column: x => x.OfferId,
-                        principalTable: "Offers",
-                        principalColumn: "OfferId");
+                        name: "FK_UserInfo_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateTable(
@@ -178,11 +178,10 @@ namespace SwapMeAngularAuthAPI.Migrations
                 {
                     TransactionId = table.Column<int>(type: "int", nullable: false)
                         .Annotation("SqlServer:Identity", "1, 1"),
-                    BuyerId = table.Column<int>(type: "int", nullable: false),
                     EndedOn = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     OfferId = table.Column<int>(type: "int", nullable: true),
-                    UserId = table.Column<int>(type: "int", nullable: true)
+                    BuyerId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -193,10 +192,11 @@ namespace SwapMeAngularAuthAPI.Migrations
                         principalTable: "Offers",
                         principalColumn: "OfferId");
                     table.ForeignKey(
-                        name: "FK_Transactions_Users_UserId",
-                        column: x => x.UserId,
+                        name: "FK_Transactions_Users_BuyerId",
+                        column: x => x.BuyerId,
                         principalTable: "Users",
-                        principalColumn: "UserId");
+                        principalColumn: "UserId",
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -225,16 +225,20 @@ namespace SwapMeAngularAuthAPI.Migrations
                 unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Offers_UserId",
+                name: "IX_Offers_PlatformId",
                 table: "Offers",
-                column: "UserId");
+                column: "PlatformId",
+                unique: true);
 
             migrationBuilder.CreateIndex(
-                name: "IX_Platforms_OfferId",
-                table: "Platforms",
-                column: "OfferId",
-                unique: true,
-                filter: "[OfferId] IS NOT NULL");
+                name: "IX_Offers_SellerId",
+                table: "Offers",
+                column: "SellerId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Transactions_BuyerId",
+                table: "Transactions",
+                column: "BuyerId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Transactions_OfferId",
@@ -244,14 +248,9 @@ namespace SwapMeAngularAuthAPI.Migrations
                 filter: "[OfferId] IS NOT NULL");
 
             migrationBuilder.CreateIndex(
-                name: "IX_Transactions_UserId",
-                table: "Transactions",
-                column: "UserId");
-
-            migrationBuilder.CreateIndex(
-                name: "IX_Users_UserInfoId",
-                table: "Users",
-                column: "UserInfoId",
+                name: "IX_UserInfo_UserId",
+                table: "UserInfo",
+                column: "UserId",
                 unique: true);
         }
 
@@ -265,10 +264,10 @@ namespace SwapMeAngularAuthAPI.Migrations
                 name: "Images");
 
             migrationBuilder.DropTable(
-                name: "Platforms");
+                name: "Transactions");
 
             migrationBuilder.DropTable(
-                name: "Transactions");
+                name: "UserInfo");
 
             migrationBuilder.DropTable(
                 name: "Offers");
@@ -280,10 +279,10 @@ namespace SwapMeAngularAuthAPI.Migrations
                 name: "OfferTypes");
 
             migrationBuilder.DropTable(
-                name: "Users");
+                name: "Platforms");
 
             migrationBuilder.DropTable(
-                name: "UsersInfo");
+                name: "Users");
         }
     }
 }

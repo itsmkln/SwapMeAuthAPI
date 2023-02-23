@@ -6,9 +6,8 @@
         public string Name { get; set; }
 
         
-        public byte[]? ImageFile { get; set; }
-        public string? PlatformName { get; set; }
-        public string? GenreName { get; set; }
+        //public byte[]? ImageFile { get; set; }
+        public int? GenreId { get; set; }
 
     }
 }
