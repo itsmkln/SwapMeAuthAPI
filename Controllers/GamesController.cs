@@ -136,19 +136,6 @@ namespace SwapMeAngularAuthAPI.Controllers
 
 
 
-        //[HttpPost]
-        //public async Task<IActionResult> AddGenre([FromBody] GameDto gameObj)
-        //{
-        //    return Ok();
-        //}
-
-        //[HttpPost]
-        //public async Task<IActionResult> AddGame([FromBody] GameDto gameObj)
-        //{
-        //    return Ok();
-        //}
-
-
 
     }
 

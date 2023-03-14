@@ -21,7 +21,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(option =>
 {
-    option.AddPolicy("MyPolicy", builder =>
+    option.AddPolicy("Allow", builder =>
     {
         builder.AllowAnyOrigin()
         .AllowAnyMethod()
@@ -80,7 +80,7 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseCors("MyPolicy");
+app.UseCors("Allow");
 
 app.UseAuthentication();
 

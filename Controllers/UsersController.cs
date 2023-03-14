@@ -42,7 +42,7 @@ namespace SwapMeAngularAuthAPI.Controllers
 
 
             if (user == null)
-                return BadRequest(new {message = "User not found!"});
+                return BadRequest(new { message = "User not found!" });
 
             if (userObj.Password == null || user.Password == null)
             {
@@ -52,7 +52,7 @@ namespace SwapMeAngularAuthAPI.Controllers
 
             if (!PwHasher.VerifyPassword(userObj.Password, user.Password))
             {
-                return BadRequest(new {Message = "Password is invalid"});
+                return BadRequest(new { Message = "Password is invalid" });
             }
 
             var token = CreateJwtToken(user);

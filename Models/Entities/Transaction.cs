@@ -12,7 +12,7 @@ namespace SwapMeAngularAuthAPI.Models.Entities
         public string Status { get; set; }
 
 
-        public Offer? Offer { get; set; }
+        public Offer Offer { get; set; }
         public int? OfferId { get; set; }
 
         public User Buyer { get; set; }

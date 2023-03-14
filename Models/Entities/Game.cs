@@ -11,7 +11,7 @@ namespace SwapMeAngularAuthAPI.Models.Entities
 
 
         public Image? Image { get; set; }
-        public Genre? Genre { get; set; }
+        public Genre Genre { get; set; }
         public int? GenreId { get; set; }
         public List<Offer>? Offers { get; set; } = new List<Offer>();
     }

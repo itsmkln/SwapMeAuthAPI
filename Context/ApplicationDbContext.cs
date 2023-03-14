@@ -45,12 +45,12 @@ namespace SwapMeAngularAuthAPI.Context
             modelBuilder.Entity<Offer>(eb =>
             {
                 eb.HasOne(o => o.OfferType)
-                .WithOne(ot => ot.Offer)
-                .HasForeignKey<Offer>(o => o.OfferTypeId);
+                .WithMany(ot => ot.Offers)
+                .HasForeignKey(o => o.OfferTypeId);
 
                 eb.HasOne(o => o.Platform)
-                .WithOne(p => p.Offer)
-                .HasForeignKey<Offer>(o => o.PlatformId);
+                .WithMany(p => p.Offers)
+                .HasForeignKey(o => o.PlatformId);
 
                 eb.HasOne(o => o.Game)
                 .WithMany(g => g.Offers)

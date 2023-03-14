@@ -40,5 +40,14 @@ namespace SwapMeAngularAuthAPI.Handlers
             await _applicationContext.Users.AddAsync(dbUser);
             await _applicationContext.SaveChangesAsync();
         }
+
+        public async Task HandleUpdateAsync(UserDto userObj) { }
+
+        public async Task HandleAuthenticationAsync(UserDto userObj)
+        {
+
+        }
+
+
     }
 }

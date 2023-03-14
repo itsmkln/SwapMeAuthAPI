@@ -8,6 +8,7 @@ namespace SwapMeAngularAuthAPI.Models.Entities
         public int OfferTypeId { get; set; }
         public string Name { get; set; }
 
-        public Offer? Offer { get; set; }
+        public List<Offer>? Offers { get; set; } = new List<Offer>();
+
     }
 }
