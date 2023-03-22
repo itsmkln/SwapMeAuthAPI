@@ -6,7 +6,7 @@
         public bool IsPhysical { get; set; } = false; //default = digital
         public string CreatedOn { get; set; } = "";
         public double? Price { get; set; } = 0;
-        public string Status { get; set; } = "New"; //new/active/ended/sold
+        public string Status { get; set; } = "New"; //active/ended/sold
         public int OfferTypeId { get; set; } //ex. 1-sell, 2-exchange, 3-both
         public int PlatformId { get; set; }
         public int GameId { get; set; }

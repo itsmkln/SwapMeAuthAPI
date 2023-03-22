@@ -68,6 +68,42 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
 
+        [HttpGet("/{offerId}")]
+        public async Task<ActionResult<OfferViewDto>> GetOfferInfo([FromRoute]int offerId)
+        {
+            var offer = await _applicationContext.Offers
+                .Include(o => o.Platform)
+                .Include(o => o.OfferType)
+                .Include(o => o.Game)
+                .Include(o => o.Seller)
+                .Include(o => o.Game.Genre)
+                .Select(o => new OfferViewDto() {
+                    OfferId = o.OfferId,
+                    IsPhysical = o.IsPhysical,
+                    CreatedOn = o.CreatedOn,
+                    Price = o.Price,
+                    Status = o.Status,
+
+                    GameId = o.GameId,
+                    SellerId = o.SellerId,
+                    Description = o.Description,
+
+
+                    GameName = o.Game.Name,
+                    GenreName = o.Game.Genre.Name,
+                    PlatformName = o.Platform.Name,
+                    SellerName = o.Seller.Username,
+                    OfferTypeName = o.OfferType.Name,
+                })
+                .FirstOrDefaultAsync(x => x.OfferId == offerId);
+
+
+
+
+            return Ok(offer);
+        }
+
+
 
     }
 }
