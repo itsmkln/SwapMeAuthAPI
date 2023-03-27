@@ -21,7 +21,7 @@ namespace SwapMeAngularAuthAPI.Handlers
             {
                 BuyerId = transactionObj.BuyerId,
                 EndedOn = DateTime.Parse(transactionObj.EndedOn),
-                OfferId = transactionObj.OfferId,
+                OfferId = transactionObj.OfferId
             };
             await _applicationContext.Transactions.AddAsync(dbTransaction);
             await _applicationContext.SaveChangesAsync();

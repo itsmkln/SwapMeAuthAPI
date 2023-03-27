@@ -62,9 +62,11 @@ builder.Services.AddScoped<OfferTypesHandler>();
 builder.Services.AddScoped<PlatformsHandler>();
 builder.Services.AddScoped<GenresHandler>();
 builder.Services.AddScoped<OffersHandler>();
+builder.Services.AddScoped<TransactionsHandler>();
 builder.Services.AddScoped<RequiredGenresHandler>();
 builder.Services.AddScoped<RequiredPlatformsHandler>();
 builder.Services.AddScoped<RequiredGamesHandler>();
+
 
 var app = builder.Build();
 
