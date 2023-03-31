@@ -9,7 +9,6 @@ namespace SwapMeAngularAuthAPI.Models.Entities
         [Key]
         public int TransactionId { get; set; }
         public DateTime EndedOn { get; set; }
-        public string Status { get; set; }
 
 
         public Offer Offer { get; set; }

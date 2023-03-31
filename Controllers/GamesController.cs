@@ -75,10 +75,27 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
         [HttpGet("getAllGames")]
-        public async Task<ActionResult<Game>> GetAllGamesData()
+        public async Task<ActionResult<Game>> GetAllGames()
         {
             var games = await _applicationContext.Games.ToListAsync();
             return Ok(games);
+        }
+
+        [HttpGet("getAllGamesView")]
+        public async Task<ActionResult<GameViewDto>> GetGamesView()
+        {
+            var games = await _applicationContext.Games
+                .Include(g => g.Genre)
+                .ToListAsync();
+
+            var viewGames = games.Select(g => new GameViewDto()
+            {
+                GameId = g.GameId,
+                Name = g.Name,
+                GenreName = g.Genre.Name
+            }).ToList();
+
+            return Ok(viewGames);
         }
 
         [HttpGet("getAllGenres")]

@@ -63,6 +63,7 @@ namespace SwapMeAngularAuthAPI.Controllers
                 SellerName = o.Seller.Username,
                 OfferTypeName = o.OfferType.Name,
             }).ToList();
+
             return Ok(viewOffers);
 
         }
