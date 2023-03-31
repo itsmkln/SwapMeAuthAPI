@@ -1,4 +1,4 @@
-﻿dateusing Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -58,7 +58,7 @@ namespace SwapMeAngularAuthAPI.Migrations
                 column: "GenreId",
                 principalTable: "Genres",
                 principalColumn: "GenreId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
 
             migrationBuilder.AddForeignKey(
                 name: "FK_Transactions_Offers_OfferId",
@@ -66,7 +66,7 @@ namespace SwapMeAngularAuthAPI.Migrations
                 column: "OfferId",
                 principalTable: "Offers",
                 principalColumn: "OfferId",
-                onDelete: ReferentialAction.Cascade);
+                onDelete: ReferentialAction.NoAction);
         }
 
         /// <inheritdoc />

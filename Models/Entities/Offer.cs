@@ -11,7 +11,7 @@ namespace SwapMeAngularAuthAPI.Models.Entities
         public DateTime CreatedOn { get; set; }
         public double Price { get; set; }
         public string Status { get; set; } // new/active/ended/sold
-        public string? Description { get; set; }
+        public string Description { get; set; } = string.Empty;
 
 
 

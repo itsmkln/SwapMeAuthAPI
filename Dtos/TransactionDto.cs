@@ -6,8 +6,8 @@ namespace SwapMeAngularAuthAPI.Dtos
     {
         public int TransactionId { get; set; }
         public int BuyerId { get; set; }
-        public string EndedOn { get; set; }
+        public string EndedOn { get; set; } = string.Empty;
 
-        public int OfferId;
+        public int OfferId { get; set; }
     }
 }
