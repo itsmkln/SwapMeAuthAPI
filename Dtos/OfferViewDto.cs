@@ -18,5 +18,8 @@
         public string SellerName { get; set; } = string.Empty;
         public string OfferTypeName { get; set; } = string.Empty; //ex. 1-sell, 2-exchange, 3-both
 
+        public string SellerCity { get; set; } = string.Empty;
+        public string SellerState { get; set; } = string.Empty;
+
     }
 }

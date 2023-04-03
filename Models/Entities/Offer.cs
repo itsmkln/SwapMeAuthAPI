@@ -10,12 +10,12 @@ namespace SwapMeAngularAuthAPI.Models.Entities
         public bool IsPhysical { get; set; } // is product in box or digital
         public DateTime CreatedOn { get; set; }
         public double Price { get; set; }
-        public string Status { get; set; } // new/active/ended/sold
+        public string Status { get; set; } = string.Empty; // new/active/ended/sold
         public string Description { get; set; } = string.Empty;
 
 
 
-        public Transaction? Transaction { get; set; }
+        public Transaction Transaction { get; set; }
 
         public OfferType OfferType { get; set; }
         public int OfferTypeId { get; set; }

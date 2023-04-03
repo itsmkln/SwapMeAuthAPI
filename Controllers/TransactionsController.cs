@@ -40,10 +40,11 @@ namespace SwapMeAngularAuthAPI.Controllers
 
         }
 
-        [HttpGet("getTransactionsView")]
-        public async Task<ActionResult<TransactionViewDto>> GetTransactionsView()
+        [HttpGet("getTransactionsView/{userId}")]
+        public async Task<ActionResult<TransactionViewDto>> GetTransactionsView([FromRoute] int userId)
         {
             var transactions = await _applicationContext.Transactions
+                .Where(t => t.Offer.SellerId == userId || (t.BuyerId == userId))
                 .Include(t => t.Offer)
                 .Include(t => t.Buyer)
                 .Include(t => t.Buyer.UserInfo)
@@ -82,6 +83,9 @@ namespace SwapMeAngularAuthAPI.Controllers
                 PlatformName = t.Offer.Platform.Name,
                 OfferTypeName = t.Offer.OfferType.Name,
                 OfferDescription = t.Offer.Description,
+                Status = t.Offer.Status,
+                CreatedOn = t.Offer.CreatedOn,
+                EndedOn = t.EndedOn,
 
                 //add more transactionview properties
 
@@ -95,6 +99,7 @@ namespace SwapMeAngularAuthAPI.Controllers
         public async Task<ActionResult<TransactionViewDto>> GetTransactionsInfo([FromRoute] int buyerId)
         {
             var transaction = await _applicationContext.Transactions
+                .Where(t => t.BuyerId == buyerId)
                 .Include(t => t.Offer)
                 .Include(t => t.Buyer)
                 .Include(t => t.Buyer.UserInfo)
@@ -104,7 +109,6 @@ namespace SwapMeAngularAuthAPI.Controllers
                 .Include(t => t.Offer.Platform)
                 .Include(t => t.Offer.OfferType)
 
-                .Where(t => t.BuyerId == buyerId)
                 .Select(t => new TransactionViewDto()
 
                 {
@@ -131,60 +135,13 @@ namespace SwapMeAngularAuthAPI.Controllers
                     PlatformName = t.Offer.Platform.Name,
                     OfferTypeName = t.Offer.OfferType.Name,
                     OfferDescription = t.Offer.Description,
+                    Status = t.Offer.Status,
+                    CreatedOn = t.Offer.CreatedOn,
+                    EndedOn = t.EndedOn,
                 })
                 .ToListAsync();
 
             return Ok(transaction);
-        }
-
-
-            [HttpGet("getSellerView/{sellerId}")]
-            public async Task<ActionResult<TransactionViewDto>> GetOffersInfo([FromRoute] int sellerId)
-            {
-                var offers = await _applicationContext.Transactions
-                    .Include(t => t.Offer)
-                    .Include(t => t.Buyer)
-                    .Include(t => t.Buyer.UserInfo)
-                    .Include(t => t.Offer.Seller)
-                    .Include(t => t.Offer.Seller.UserInfo)
-                    .Include(t => t.Offer.Game)
-                    .Include(t => t.Offer.Platform)
-                    .Include(t => t.Offer.OfferType)
-
-                    .Where(t => t.Offer.SellerId == sellerId)
-                    .Select(t => new TransactionViewDto()
-
-                    {
-                        TransactionId = t.TransactionId,
-                        SellerId = t.Offer.SellerId,
-                        SellerUsername = t.Offer.Seller.Username,
-                        SellerFirstName = t.Offer.Seller.UserInfo.FirstName,
-                        SellerLastName = t.Offer.Seller.UserInfo.LastName,
-                        SellerEmail = t.Offer.Seller.Email,
-                        SellerCity = t.Offer.Seller.UserInfo.City,
-                        SellerPhoneNumber = t.Offer.Seller.UserInfo.PhoneNumber,
-
-                        BuyerId = t.BuyerId,
-                        BuyerUsername = t.Buyer.Username,
-                        BuyerFirstName = t.Buyer.UserInfo.FirstName,
-                        BuyerLastName = t.Buyer.UserInfo.LastName,
-                        BuyerEmail = t.Buyer.UserInfo.User.Email,
-                        BuyerCity = t.Buyer.UserInfo.City,
-                        BuyerState = t.Buyer.UserInfo.State,
-                        BuyerPhoneNumber = t.Buyer.UserInfo.PhoneNumber,
-
-                        OfferId = t.Offer.OfferId,
-                        GameName = t.Offer.Game.Name,
-                        PlatformName = t.Offer.Platform.Name,
-                        OfferTypeName = t.Offer.OfferType.Name,
-                        OfferDescription = t.Offer.Description,
-                    })
-                    .ToListAsync();
-
-
-
-
-                return Ok(offers);
         }
 
     }
