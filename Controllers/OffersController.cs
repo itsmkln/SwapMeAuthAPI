@@ -221,6 +221,21 @@ namespace SwapMeAngularAuthAPI.Controllers
             return Ok(offers);
         }
 
+        [HttpDelete("deleteOfferById/{offerId}")]
+        public async Task<IActionResult> DeleteOffer(int offerId)
+        {
+            var offer = await _applicationContext.Offers.FirstOrDefaultAsync(o => o.OfferId == offerId);
+            if (offer == null)
+                return NotFound();
+
+            _applicationContext.Offers.Remove(offer);
+            await _applicationContext.SaveChangesAsync();
+            return Ok(new
+            {
+                Message = "Offer has been deleted."
+            });
+        }
+
 
 
     }

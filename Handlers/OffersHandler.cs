@@ -33,5 +33,10 @@ namespace SwapMeAngularAuthAPI.Handlers
             await _applicationContext.Offers.AddAsync(dbOffer);
             await _applicationContext.SaveChangesAsync();
         }
+
+
+
+
+
     }
 }

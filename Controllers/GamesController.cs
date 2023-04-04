@@ -34,7 +34,7 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
 
-        [HttpPost("addgame")]
+        [HttpPost("addGame")]
         public async Task<IActionResult> AddGame([FromBody] GameDto gameObj)
         {
             if(gameObj == null)
@@ -47,7 +47,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             return Ok();
         }
 
-        [HttpPost("addplatform")]
+        [HttpPost("addPlatform")]
         public async Task<IActionResult> AddPlatform([FromBody] Platform platformObj)
         {
             if (platformObj == null)
@@ -60,7 +60,7 @@ namespace SwapMeAngularAuthAPI.Controllers
             return Ok();
         }
 
-        [HttpPost("addgenre")]
+        [HttpPost("addGenre")]
         public async Task<IActionResult> AddGenre([FromBody] Genre genreObj)
         {
             if (genreObj == null)
@@ -119,6 +119,51 @@ namespace SwapMeAngularAuthAPI.Controllers
             return Ok(offerTypes);
         }
 
+        [HttpDelete("deleteGameById/{gameId}")]
+        public async Task<IActionResult> DeleteGame(int gameId)
+        {
+            var game = await _applicationContext.Games.FirstOrDefaultAsync(g => g.GameId == gameId);
+            if (game == null)
+                return NotFound();
+
+            _applicationContext.Games.Remove(game);
+            await _applicationContext.SaveChangesAsync();
+            return Ok(new
+            {
+                Message = "Game has been deleted."
+            });
+        }
+
+
+        [HttpDelete("deleteGenreById/{genreId}")]
+        public async Task<IActionResult> DeleteGenre(int genreId)
+        {
+            var genre = await _applicationContext.Genres.FirstOrDefaultAsync(ge => ge.GenreId == genreId);
+            if (genre == null)
+                return NotFound();
+
+            _applicationContext.Genres.Remove(genre);
+            await _applicationContext.SaveChangesAsync();
+            return Ok(new
+            {
+                Message = "Genre has been deleted."
+            });
+        }
+
+        [HttpDelete("deletePlatformById/{platformId}")]
+        public async Task<IActionResult> DeletePlatform(int platformId)
+        {
+            var platform = await _applicationContext.Platforms.FirstOrDefaultAsync(p => p.PlatformId == platformId);
+            if (platform == null)
+                return NotFound();
+
+            _applicationContext.Platforms.Remove(platform);
+            await _applicationContext.SaveChangesAsync();
+            return Ok(new
+            {
+                Message = "Platform has been deleted."
+            });
+        }
 
 
 
