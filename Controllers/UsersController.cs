@@ -168,11 +168,11 @@ namespace SwapMeAngularAuthAPI.Controllers
             return Ok(users);
         }
 
-        [HttpGet("{username}")]
-        public async Task<IActionResult> GetUser([FromRoute] string username)
+        [HttpGet("getUserDetails/{userId}")]
+        public async Task<IActionResult> GetUserDetails([FromRoute] int userId)
         {
             var users = await _applicationDbContext.Users.Include(x => x.UserInfo).ToListAsync();
-            var user = users.FirstOrDefault(x => x.Username.Equals(username, StringComparison.InvariantCultureIgnoreCase));
+            var user = users.FirstOrDefault(x => x.UserId == userId);
             if(user == null)
             {
                 return NotFound(new
@@ -272,7 +272,34 @@ namespace SwapMeAngularAuthAPI.Controllers
                 });
             }
             return NotFound("User not found");
+        }
 
+        [HttpPost("updateProfile")]
+        public async Task<IActionResult> UpdateProfile(UserDto userObj)
+        {
+            if (userObj == null)
+            {
+                return BadRequest();
+            }
+            var dbUser = await _applicationDbContext.Users.Include(x => x.UserInfo).FirstOrDefaultAsync(x => x.UserId == userObj.UserId);
+
+            if (dbUser != null)
+            {
+                dbUser.Email = userObj.Email;
+                dbUser.UserInfo.FirstName = userObj.FirstName;
+                dbUser.UserInfo.LastName = userObj.LastName;
+                dbUser.UserInfo.PhoneNumber = userObj.PhoneNumber;
+                dbUser.UserInfo.City = userObj.City;
+                dbUser.UserInfo.State = userObj.State;
+
+                await _applicationDbContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "User has been updated."
+                });
+            }
+            return NotFound("User not found");
         }
 
 

@@ -112,7 +112,7 @@ namespace SwapMeAngularAuthAPI.Controllers
         }
 
         [HttpPost("statusUpdate")]
-        public async Task<IActionResult> Update(OfferStatusUpdateDto statusObj)
+        public async Task<IActionResult> Update(OfferDto statusObj)
         {
             if (statusObj == null)
             {
@@ -159,13 +159,16 @@ namespace SwapMeAngularAuthAPI.Controllers
                     SellerLastName = o.Seller.UserInfo.LastName,
                     SellerEmail = o.Seller.Email,
                     SellerCity = o.Seller.UserInfo.City,
+                    SellerState = o.Seller.UserInfo.State,
                     SellerPhoneNumber = o.Seller.UserInfo.PhoneNumber,
 
                     GameName = o.Game.Name,
                     PlatformName = o.Platform.Name,
                     OfferTypeName = o.OfferType.Name,
+                    OfferTypeId = o.OfferTypeId,
                     OfferDescription = o.Description,
                     Status = o.Status,
+                    Price = o.Price,
                     CreatedOn = o.CreatedOn,
                 })
                 .ToListAsync();
@@ -197,6 +200,7 @@ namespace SwapMeAngularAuthAPI.Controllers
                     SellerLastName = o.Seller.UserInfo.LastName,
                     SellerEmail = o.Seller.Email,
                     SellerCity = o.Seller.UserInfo.City,
+                    SellerState = o.Seller.UserInfo.State,
                     SellerPhoneNumber = o.Seller.UserInfo.PhoneNumber,
 
                     BuyerId = o.Transaction.BuyerId,
@@ -214,12 +218,104 @@ namespace SwapMeAngularAuthAPI.Controllers
                     OfferTypeName = o.OfferType.Name,
                     OfferDescription = o.Description,
                     Status = o.Status,
+                    Price = o.Price,
                     CreatedOn = o.CreatedOn,
                     EndedOn = o.Transaction.EndedOn,
                 })
                 .ToListAsync();
             return Ok(offers);
         }
+
+        [HttpGet("getAllActiveOffers")]
+        public async Task<ActionResult<MyOffersDto>> GetAllActiveOffersInfo()
+        {
+            var offers = await _applicationContext.Offers
+                .Where(o => o.Status == "Active")
+                .Include(o => o.Transaction)
+                .Include(o => o.Transaction.Buyer)
+                .Include(o => o.Transaction.Buyer.UserInfo)
+                .Include(o => o.Seller)
+                .Include(o => o.Seller.UserInfo)
+                .Include(o => o.Game)
+                .Include(o => o.Platform)
+                .Include(o => o.OfferType)
+
+                .Select(o => new MyOffersDto()
+
+                {
+                    OfferId = o.OfferId,
+                    SellerId = o.SellerId,
+                    SellerUsername = o.Seller.Username,
+                    SellerFirstName = o.Seller.UserInfo.FirstName,
+                    SellerLastName = o.Seller.UserInfo.LastName,
+                    SellerEmail = o.Seller.Email,
+                    SellerCity = o.Seller.UserInfo.City,
+                    SellerState = o.Seller.UserInfo.State,
+                    SellerPhoneNumber = o.Seller.UserInfo.PhoneNumber,
+
+                    GameName = o.Game.Name,
+                    PlatformName = o.Platform.Name,
+                    OfferTypeName = o.OfferType.Name,
+                    OfferTypeId = o.OfferTypeId,
+                    OfferDescription = o.Description,
+                    Status = o.Status,
+                    Price = o.Price,
+                    CreatedOn = o.CreatedOn,
+                })
+                .ToListAsync();
+            return Ok(offers);
+        }
+
+        [HttpGet("getAllEndedOffers")]
+        public async Task<ActionResult<TransactionViewDto>> GetAllEndedOffersInfo()
+        {
+            var offers = await _applicationContext.Offers
+                .Where(o => o.Status == "Ended")
+                .Include(o => o.Transaction)
+                .Include(o => o.Transaction.Buyer)
+                .Include(o => o.Transaction.Buyer.UserInfo)
+                .Include(o => o.Seller)
+                .Include(o => o.Seller.UserInfo)
+                .Include(o => o.Game)
+                .Include(o => o.Platform)
+                .Include(o => o.OfferType)
+
+                .Select(o => new TransactionViewDto()
+
+                {
+                    OfferId = o.OfferId,
+                    SellerId = o.SellerId,
+                    SellerUsername = o.Seller.Username,
+                    SellerFirstName = o.Seller.UserInfo.FirstName,
+                    SellerLastName = o.Seller.UserInfo.LastName,
+                    SellerEmail = o.Seller.Email,
+                    SellerCity = o.Seller.UserInfo.City,
+                    SellerState = o.Seller.UserInfo.State,
+                    SellerPhoneNumber = o.Seller.UserInfo.PhoneNumber,
+
+                    BuyerId = o.Transaction.BuyerId,
+                    BuyerUsername = o.Transaction.Buyer.Username,
+                    BuyerFirstName = o.Transaction.Buyer.UserInfo.FirstName,
+                    BuyerLastName = o.Transaction.Buyer.UserInfo.LastName,
+                    BuyerEmail = o.Transaction.Buyer.UserInfo.User.Email,
+                    BuyerCity = o.Transaction.Buyer.UserInfo.City,
+                    BuyerState = o.Transaction.Buyer.UserInfo.State,
+                    BuyerPhoneNumber = o.Transaction.Buyer.UserInfo.PhoneNumber,
+
+                    GameName = o.Game.Name,
+                    PlatformName = o.Platform.Name,
+                    OfferTypeName = o.OfferType.Name,
+                    OfferTypeId = o.OfferTypeId,
+                    OfferDescription = o.Description,
+                    Status = o.Status,
+                    Price = o.Price,
+                    CreatedOn = o.CreatedOn,
+                    EndedOn = o.Transaction.EndedOn,
+                })
+                .ToListAsync();
+            return Ok(offers);
+        }
+
 
         [HttpDelete("deleteOfferById/{offerId}")]
         public async Task<IActionResult> DeleteOffer(int offerId)
@@ -236,7 +332,30 @@ namespace SwapMeAngularAuthAPI.Controllers
             });
         }
 
+        [HttpPost("updateOffer")]
+        public async Task<IActionResult> UpdateOffer(OfferUpdateDto offerObj)
+        {
+            if (offerObj == null)
+            {
+                return BadRequest();
+            }
+            var dbOffer = await _applicationContext.Offers
+                .FirstOrDefaultAsync(x => x.OfferId == offerObj.OfferId);
 
+            if (dbOffer != null)
+            {
+                dbOffer.OfferTypeId = offerObj.OfferTypeId;
+                dbOffer.Description = offerObj.OfferDescription;
+                dbOffer.Price = offerObj.Price;
 
+                await _applicationContext.SaveChangesAsync();
+
+                return Ok(new
+                {
+                    Message = "Offer has been updated."
+                });
+            }
+            return NotFound("Offer not found");
+        }
     }
 }

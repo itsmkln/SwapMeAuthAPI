@@ -17,9 +17,11 @@
         public string PlatformName { get; set; } = string.Empty;
 
         public string OfferTypeName { get; set; } = string.Empty;
+        public int OfferTypeId { get; set; } = 0;
 
         public string OfferDescription { get; set; } = string.Empty;
         public string Status { get; set;} = string.Empty;
+        public double Price { get; set; } = 0;
 
         public DateTime CreatedOn { get; set; } = DateTime.MinValue;
 
